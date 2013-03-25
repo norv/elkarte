@@ -763,7 +763,7 @@ function EditBoardSettings($return_config = false)
 		return $config_vars;
 
 	// Needed for the settings template.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Don't let guests have these permissions.
 	$context['post_url'] = $scripturl . '?action=admin;area=manageboards;save;sa=settings';
@@ -788,7 +788,7 @@ function EditBoardSettings($return_config = false)
 
 		call_integration_hook('integrate_save_board_settings');
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=manageboards;sa=settings');
 	}
 
@@ -796,5 +796,5 @@ function EditBoardSettings($return_config = false)
 	createToken('admin-mp');
 
 	// Prepare the settings...
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }

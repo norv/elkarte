@@ -200,7 +200,7 @@ function action_attachments($return_config = false)
 
 	// These are very likely to come in handy! (i.e. without them we're doomed!)
 	require_once(ADMINDIR . '/ManagePermissions.php');
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Saving settings?
 	if (isset($_GET['save']))
@@ -256,12 +256,12 @@ function action_attachments($return_config = false)
 
 		call_integration_hook('integrate_save_attachment_settings');
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=manageattachments;sa=attachments');
 	}
 
 	$context['post_url'] = $scripturl . '?action=admin;area=manageattachments;save;sa=attachments';
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 
 	$context['sub_template'] = 'show_settings';
 }
@@ -342,7 +342,7 @@ function action_avatars($return_config = false)
 
 	// We need this file for the settings template.
 	require_once(ADMINDIR . '/ManageServer.php'); // @todo remove
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Saving avatar settings?
 	if (isset($_GET['save']))
@@ -355,7 +355,7 @@ function action_avatars($return_config = false)
 
 		call_integration_hook('integrate_save_avatar_settings');
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=manageattachments;sa=avatars');
 	}
 
@@ -367,7 +367,7 @@ function action_avatars($return_config = false)
 
 	// Prepare the context.
 	$context['post_url'] = $scripturl . '?action=admin;area=manageattachments;save;sa=avatars';
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 
 	// Add a layer for the javascript.
 	$context['template_layers'][] = 'avatar_settings';

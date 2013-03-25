@@ -139,7 +139,7 @@ function EditSearchSettings($return_config = false)
 		);
 
 	// We'll need this for the settings.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// A form was submitted.
 	if (isset($_REQUEST['save']))
@@ -165,7 +165,7 @@ function EditSearchSettings($return_config = false)
 			'additional_search_engines' => !empty($new_engines) ? serialize($new_engines) : null
 		));
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=managesearch;sa=settings;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 
@@ -176,7 +176,7 @@ function EditSearchSettings($return_config = false)
 	// We need this for the in-line permissions
 	createToken('admin-mp');
 
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }
 
 /**

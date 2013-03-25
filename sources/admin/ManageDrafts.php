@@ -42,7 +42,7 @@ function ModifyDraftSettings($return_config = false)
 		return $config_vars;
 
 	// Get the settings ready.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Setup the template.
 	$context['page_title'] = $txt['managedrafts_settings'];
@@ -60,7 +60,7 @@ function ModifyDraftSettings($return_config = false)
 
 		// Protect them from themselves.
 		$_POST['drafts_autosave_frequency'] = $_POST['drafts_autosave_frequency'] < 30 ? 30 : $_POST['drafts_autosave_frequency'];
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=managedrafts');
 	}
 
@@ -83,5 +83,5 @@ function ModifyDraftSettings($return_config = false)
 	$context['settings_title'] = $txt['managedrafts_settings'];
 
 	// Prepare the settings...
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }

@@ -184,8 +184,8 @@ function ModifyGeneralSettings($return_config = false)
 	}
 
 	// Fill the config array.
-	require_once(SUBSDIR . '/Settings.class.php');
-	Settings::prepareServerSettingsContext($config_vars);
+	require_once(SUBSDIR . '/Settings_Form.class.php');
+	Settings_Form::prepareServerSettingsContext($config_vars);
 }
 
 /**
@@ -249,8 +249,8 @@ function ModifyDatabaseSettings($return_config = false)
 	}
 
 	// Fill the config array.
-	require_once(SUBSDIR . '/Settings.class.php');
-	Settings::prepareServerSettingsContext($config_vars);
+	require_once(SUBSDIR . '/Settings_Form.class.php');
+	Settings_Form::prepareServerSettingsContext($config_vars);
 }
 
 /**
@@ -317,8 +317,8 @@ function ModifyCookieSettings($return_config = false)
 	}
 
 	// Fill the config array.
-	require_once(SUBSDIR . '/Settings.class.php');
-	Settings::prepareServerSettingsContext($config_vars);
+	require_once(SUBSDIR . '/Settings_Form.class.php');
+	Settings_Form::prepareServerSettingsContext($config_vars);
 }
 
 /**
@@ -407,8 +407,8 @@ function ModifyCacheSettings($return_config = false)
 	createToken('admin-ssc');
 
 	// Prepare for the template.
-	require_once(SUBSDIR . '/Settings.class.php');
-	Settings::prepareServerSettingsContext($config_vars);
+	require_once(SUBSDIR . '/Settings_Form.class.php');
+	Settings_Form::prepareServerSettingsContext($config_vars);
 }
 
 /**
@@ -477,7 +477,7 @@ function ModifyLoadBalancingSettings($return_config = false)
 	$context['settings_title'] = $txt['load_balancing_settings'];
 
 	// We'll need this for the rest, display, edit, save settings.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Saving?
 	if (isset($_GET['save']))
@@ -497,13 +497,13 @@ function ModifyLoadBalancingSettings($return_config = false)
 
 		call_integration_hook('integrate_save_loadavg_settings');
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=serversettings;sa=loads;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 
 	createToken('admin-ssc');
 	createToken('admin-dbsc');
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }
 
 /**
@@ -523,7 +523,7 @@ function saveSettings(&$config_vars)
 	validateToken('admin-ssc');
 
 	// lets be sure we have settings at hand
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Fix the darn stupid cookiename! (more may not be allowed, but these for sure!)
 	if (isset($_POST['cookiename']))
@@ -610,7 +610,7 @@ function saveSettings(&$config_vars)
 
 	// Save the new database-based settings, if any.
 	if (!empty($new_settings))
-		Settings::saveDBSettings($new_settings);
+		Settings_Form::saveDBSettings($new_settings);
 }
 
 /**

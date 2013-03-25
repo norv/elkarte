@@ -280,7 +280,7 @@ function ModifyRegistrationSettings($return_config = false)
 	global $txt, $context, $scripturl, $modSettings;
 
 	// This is really quite wanting.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	$config_vars = array(
 			array('select', 'registration_method', array($txt['setting_registration_standard'], $txt['setting_registration_activate'], $txt['setting_registration_approval'], $txt['setting_registration_disabled'])),
@@ -317,7 +317,7 @@ function ModifyRegistrationSettings($return_config = false)
 
 		call_integration_hook('integrate_save_registration_settings');
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 
 		redirectexit('action=admin;area=regcenter;sa=settings');
 	}
@@ -342,5 +342,5 @@ function ModifyRegistrationSettings($return_config = false)
 	// Turn the postal address into something suitable for a textbox.
 	$modSettings['coppaPost'] = !empty($modSettings['coppaPost']) ? preg_replace('~<br ?/?' . '>~', "\n", $modSettings['coppaPost']) : '';
 
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }

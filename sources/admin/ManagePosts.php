@@ -210,7 +210,7 @@ function ModifyPostSettings($return_config = false)
 		return $config_vars;
 
 	// We'll want this for our easy settings save.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Setup the template.
 	$context['page_title'] = $txt['manageposts_settings'];
@@ -242,7 +242,7 @@ function ModifyPostSettings($return_config = false)
 
 		call_integration_hook('integrate_save_post_settings');
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=postsettings;sa=posts');
 	}
 
@@ -251,7 +251,7 @@ function ModifyPostSettings($return_config = false)
 	$context['settings_title'] = $txt['manageposts_settings'];
 
 	// Prepare the settings...
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }
 
 /**
@@ -285,7 +285,7 @@ function ModifyBBCSettings($return_config = false)
 		return $config_vars;
 
 	// Prepare, edit, save settings.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Setup the template.
 	$context['sub_template'] = 'show_settings';
@@ -313,14 +313,14 @@ function ModifyBBCSettings($return_config = false)
 
 		call_integration_hook('integrate_save_bbc_settings', array($bbcTags));
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=postsettings;sa=bbc');
 	}
 
 	$context['post_url'] = $scripturl . '?action=admin;area=postsettings;save;sa=bbc';
 	$context['settings_title'] = $txt['manageposts_bbc_settings_title'];
 
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }
 
 /**
@@ -364,7 +364,7 @@ function ModifyTopicSettings($return_config = false)
 		return $config_vars;
 
 	// Get the settings ready.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Setup the template.
 	$context['page_title'] = $txt['manageposts_topic_settings'];
@@ -376,7 +376,7 @@ function ModifyTopicSettings($return_config = false)
 		checkSession();
 		call_integration_hook('integrate_save_topic_settings');
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=postsettings;sa=topics');
 	}
 
@@ -385,5 +385,5 @@ function ModifyTopicSettings($return_config = false)
 	$context['settings_title'] = $txt['manageposts_topic_settings'];
 
 	// Prepare the settings...
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }

@@ -1009,7 +1009,7 @@ function ModifyMembergroupsettings()
 	$context['page_title'] = $txt['membergroups_settings'];
 
 	// Needed for the settings functions.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Don't allow assignment of guests.
 	$context['permissions_excluded'] = array(-1);
@@ -1027,7 +1027,7 @@ function ModifyMembergroupsettings()
 		call_integration_hook('integrate_save_membergroup_settings');
 
 		// Yeppers, saving this...
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=membergroups;sa=settings');
 	}
 
@@ -1038,5 +1038,5 @@ function ModifyMembergroupsettings()
 	// We need this for the in-line permissions
 	createToken('admin-mp');
 
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }

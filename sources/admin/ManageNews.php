@@ -971,7 +971,7 @@ function ModifyNewsSettings($return_config = false)
 	$context['sub_template'] = 'show_settings';
 
 	// Needed for the settings
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Wrap it all up nice and warm...
 	$context['post_url'] = $scripturl . '?action=admin;area=news;save;sa=settings';
@@ -989,12 +989,12 @@ function ModifyNewsSettings($return_config = false)
 
 		call_integration_hook('integrate_save_news_settings');
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=news;sa=settings');
 	}
 
 	// We need this for the in-line permissions
 	createToken('admin-mp');
 
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }

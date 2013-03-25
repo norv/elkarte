@@ -778,7 +778,7 @@ function ModifyLanguageSettings($return_config = false)
 	global $scripturl, $context, $txt, $settings, $smcFunc;
 
 	// We'll want to save them someday.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Warn the user if the backup of Settings.php failed.
 	$settings_not_writable = !is_writable(BOARDDIR . '/Settings.php');
@@ -826,7 +826,7 @@ function ModifyLanguageSettings($return_config = false)
 		$context['settings_message'] = '<div class="centertext"><strong>' . $txt['admin_backup_fail'] . '</strong></div><br />';
 
 	// Fill the config array.
-	Settings::prepareServerSettingsContext($config_vars);
+	Settings_Form::prepareServerSettingsContext($config_vars);
 }
 
 /**

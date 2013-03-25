@@ -119,7 +119,7 @@ function ModifySubscriptionSettings($return_config = false)
 		return $config_vars;
 
 	// Get the settings ready
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Some important context stuff
 	$context['page_title'] = $txt['settings'];
@@ -176,13 +176,13 @@ function ModifySubscriptionSettings($return_config = false)
 		}
 		unset($config_vars['dummy_currency']);
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 
 		redirectexit('action=admin;area=paidsubscribe;sa=settings');
 	}
 
 	// Prepare the settings...
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }
 
 /**

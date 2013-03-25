@@ -152,7 +152,7 @@ function EditSmileySettings($return_config = false)
 		return $config_vars;
 
 	// Make sure we can handle Settings.
-	require_once(SUBSDIR . '/Settings.class.php');
+	require_once(SUBSDIR . '/Settings_Form.class.php');
 
 	// Setup the basics of the settings template.
 	$context['sub_template'] = 'show_settings';
@@ -175,7 +175,7 @@ function EditSmileySettings($return_config = false)
 
 		call_integration_hook('integrate_save_smiley_settings');
 
-		Settings::saveDBSettings($config_vars);
+		Settings_Form::saveDBSettings($config_vars);
 
 		cache_put_data('parsing_smileys', null, 480);
 		cache_put_data('posting_smileys', null, 480);
@@ -186,7 +186,7 @@ function EditSmileySettings($return_config = false)
 	// We need this for the in-line permissions
 	createToken('admin-mp');
 
-	Settings::prepareDBSettingContext($config_vars);
+	Settings_Form::prepareDBSettingContext($config_vars);
 }
 
 /**
