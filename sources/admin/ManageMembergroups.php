@@ -391,7 +391,7 @@ function AddMembergroup()
 			}
 
 			// Don't allow copying of a real priviledged person!
-			require_once(ADMINDIR . '/ManagePermissions.php');
+			require_once(SUBSDIR . '/Permission.subs.php');
 			loadIllegalPermissions();
 
 			$request = $smcFunc['db_query']('', '
