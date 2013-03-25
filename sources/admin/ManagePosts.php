@@ -242,7 +242,7 @@ function ModifyPostSettings($return_config = false)
 
 		call_integration_hook('integrate_save_post_settings');
 
-		Settings_Form::saveDBSettings($config_vars);
+		Settings_Form::save_db($config_vars);
 		redirectexit('action=admin;area=postsettings;sa=posts');
 	}
 
@@ -313,7 +313,7 @@ function ModifyBBCSettings($return_config = false)
 
 		call_integration_hook('integrate_save_bbc_settings', array($bbcTags));
 
-		Settings_Form::saveDBSettings($config_vars);
+		Settings_Form::save_db($config_vars);
 		redirectexit('action=admin;area=postsettings;sa=bbc');
 	}
 
@@ -376,7 +376,7 @@ function ModifyTopicSettings($return_config = false)
 		checkSession();
 		call_integration_hook('integrate_save_topic_settings');
 
-		Settings_Form::saveDBSettings($config_vars);
+		Settings_Form::save_db($config_vars);
 		redirectexit('action=admin;area=postsettings;sa=topics');
 	}
 

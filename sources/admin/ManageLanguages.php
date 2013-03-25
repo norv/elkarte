@@ -585,7 +585,7 @@ function ModifyLanguages()
 		if ($_POST['def_language'] != $language && $lang_exists)
 		{
 			require_once(SUBSDIR . '/Settings_Form.class.php');
-			Settings_Form::updateSettingsFile(array('language' => '\'' . $_POST['def_language'] . '\''));
+			Settings_Form::save_file(array('language' => '\'' . $_POST['def_language'] . '\''));
 			$language = $_POST['def_language'];
 		}
 	}
@@ -977,7 +977,7 @@ function ModifyLanguage()
 		{
 			require_once(SUBSDIR . '/Settings_Form.class.php');
 			$language = 'english';
-			Settings_Form::updateSettingsFile(array('language' => '\'' . $language . '\''));
+			Settings_Form::save_file(array('language' => '\'' . $language . '\''));
 		}
 
 		// Seventh, get out of here.

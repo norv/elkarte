@@ -148,7 +148,7 @@ class Settings_Form
 			}
 		}
 
-		// Two tokens because saving these settings requires both save and saveDBSettings
+		// Two tokens because saving these settings requires both save and save_db
 		createToken('admin-ssc');
 		createToken('admin-dbsc');
 	}
@@ -399,8 +399,7 @@ class Settings_Form
 		}
 
 		// Save the relevant settings in the Settings.php file.
-		require_once(SUBSDIR . '/Admin.subs.php');
-		updateSettingsFile($new_settings);
+		self::save_file($new_settings);
 
 		// Now loop through the remaining (database-based) settings.
 		$new_settings = array();
@@ -416,7 +415,7 @@ class Settings_Form
 
 		// Save the new database-based settings, if any.
 		if (!empty($new_settings))
-			Settings_Form::saveDBSettings($new_settings);
+			Settings_Form::save_db($new_settings);
 	}
 
 	/**
@@ -424,7 +423,7 @@ class Settings_Form
  	*
  	* @param array $config_vars
  	*/
-	static function saveDBSettings(&$config_vars)
+	static function save_db(&$config_vars)
 	{
 		global $context;
 
@@ -517,7 +516,7 @@ class Settings_Form
 	 *
 	 * @param array $config_vars
  	*/
-	static function updateSettingsFile($config_vars)
+	static function save_file($config_vars)
 	{
 		global $context;
 

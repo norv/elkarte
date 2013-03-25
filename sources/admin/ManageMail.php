@@ -340,7 +340,7 @@ function ModifyMailSettings($return_config = false)
 		unset($config_vars['birthday_subject'], $config_vars['birthday_body']);
 		call_integration_hook('integrate_save_mail_settings');
 
-		Settings_Form::saveDBSettings($config_vars);
+		Settings_Form::save_db($config_vars);
 		redirectexit('action=admin;area=mailqueue;sa=settings');
 	}
 

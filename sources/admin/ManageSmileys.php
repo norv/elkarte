@@ -175,7 +175,7 @@ function EditSmileySettings($return_config = false)
 
 		call_integration_hook('integrate_save_smiley_settings');
 
-		Settings_Form::saveDBSettings($config_vars);
+		Settings_Form::save_db($config_vars);
 
 		cache_put_data('parsing_smileys', null, 480);
 		cache_put_data('posting_smileys', null, 480);

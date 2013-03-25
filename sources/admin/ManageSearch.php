@@ -165,7 +165,7 @@ function EditSearchSettings($return_config = false)
 			'additional_search_engines' => !empty($new_engines) ? serialize($new_engines) : null
 		));
 
-		Settings_Form::saveDBSettings($config_vars);
+		Settings_Form::save_db($config_vars);
 		redirectexit('action=admin;area=managesearch;sa=settings;' . $context['session_var'] . '=' . $context['session_id']);
 	}
 

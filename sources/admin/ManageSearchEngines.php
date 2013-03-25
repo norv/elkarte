@@ -131,7 +131,7 @@ function ManageSearchEngineSettings($return_config = false)
 		checkSession();
 
 		call_integration_hook('integrate_save_search_engine_settings');
-		Settings_Form::saveDBSettings($config_vars);
+		Settings_Form::save_db($config_vars);
 		recacheSpiderNames();
 		redirectexit('action=admin;area=sengines;sa=settings');
 	}
