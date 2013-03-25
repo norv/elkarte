@@ -261,7 +261,7 @@ function action_attachments($return_config = false)
 	}
 
 	$context['post_url'] = $scripturl . '?action=admin;area=manageattachments;save;sa=attachments';
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 
 	$context['sub_template'] = 'show_settings';
 }
@@ -367,7 +367,7 @@ function action_avatars($return_config = false)
 
 	// Prepare the context.
 	$context['post_url'] = $scripturl . '?action=admin;area=manageattachments;save;sa=avatars';
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 
 	// Add a layer for the javascript.
 	$context['template_layers'][] = 'avatar_settings';

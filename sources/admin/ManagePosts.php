@@ -251,7 +251,7 @@ function ModifyPostSettings($return_config = false)
 	$context['settings_title'] = $txt['manageposts_settings'];
 
 	// Prepare the settings...
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 }
 
 /**
@@ -320,7 +320,7 @@ function ModifyBBCSettings($return_config = false)
 	$context['post_url'] = $scripturl . '?action=admin;area=postsettings;save;sa=bbc';
 	$context['settings_title'] = $txt['manageposts_bbc_settings_title'];
 
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 }
 
 /**
@@ -385,5 +385,5 @@ function ModifyTopicSettings($return_config = false)
 	$context['settings_title'] = $txt['manageposts_topic_settings'];
 
 	// Prepare the settings...
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 }

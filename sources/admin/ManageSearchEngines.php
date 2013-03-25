@@ -142,7 +142,7 @@ function ManageSearchEngineSettings($return_config = false)
 	addInlineJavascript($javascript_function, true);
 
 	// Prepare the settings...
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 }
 
 /**

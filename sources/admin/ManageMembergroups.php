@@ -1038,5 +1038,5 @@ function ModifyMembergroupsettings()
 	// We need this for the in-line permissions
 	createToken('admin-mp');
 
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 }

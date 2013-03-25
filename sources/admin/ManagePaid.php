@@ -182,7 +182,7 @@ function ModifySubscriptionSettings($return_config = false)
 	}
 
 	// Prepare the settings...
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 }
 
 /**

@@ -83,5 +83,5 @@ function ModifyDraftSettings($return_config = false)
 	$context['settings_title'] = $txt['managedrafts_settings'];
 
 	// Prepare the settings...
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 }

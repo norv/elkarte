@@ -362,5 +362,5 @@ function ModifyCalendarSettings($return_config = false)
 	createToken('admin-mp');
 
 	// Prepare the settings...
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 }

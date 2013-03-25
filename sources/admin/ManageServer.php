@@ -503,7 +503,7 @@ function ModifyLoadBalancingSettings($return_config = false)
 
 	createToken('admin-ssc');
 	createToken('admin-dbsc');
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 }
 
 /**

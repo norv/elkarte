@@ -347,7 +347,7 @@ function ModifyMailSettings($return_config = false)
 	$context['post_url'] = $scripturl . '?action=admin;area=mailqueue;save;sa=settings';
 	$context['settings_title'] = $txt['mailqueue_settings'];
 
-	prepareDBSettingContext($config_vars);
+	Settings::prepareDBSettingContext($config_vars);
 
 	$javascript = '
 		var bDay = {';
