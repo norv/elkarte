@@ -174,17 +174,18 @@ function ModifyGeneralSettings($return_config = false)
 	$context['post_url'] = $scripturl . '?action=admin;area=serversettings;sa=general;save';
 	$context['settings_title'] = $txt['general_settings'];
 
+	require_once(SUBSDIR . '/Settings_Form.class.php');
+
 	// Saving settings?
 	if (isset($_REQUEST['save']))
 	{
 		call_integration_hook('integrate_save_general_settings');
 
-		saveSettings($config_vars);
+		Settings_Form::saveSettings($config_vars);
 		redirectexit('action=admin;area=serversettings;sa=general;' . $context['session_var'] . '=' . $context['session_id']. ';msg=' . (!empty($context['settings_message']) ? $context['settings_message'] : 'core_settings_saved'));
 	}
 
 	// Fill the config array.
-	require_once(SUBSDIR . '/Settings_Form.class.php');
 	Settings_Form::prepareServerSettingsContext($config_vars);
 }
 
@@ -239,17 +240,18 @@ function ModifyDatabaseSettings($return_config = false)
 	$context['settings_title'] = $txt['database_paths_settings'];
 	$context['save_disabled'] = $context['settings_not_writable'];
 
+	require_once(SUBSDIR . '/Settings_Form.class.php');
+
 	// Saving settings?
 	if (isset($_REQUEST['save']))
 	{
 		call_integration_hook('integrate_save_database_settings');
 
-		saveSettings($config_vars);
+		Settings_Form::saveSettings($config_vars);
 		redirectexit('action=admin;area=serversettings;sa=database;' . $context['session_var'] . '=' . $context['session_id'] . ';msg=' . (!empty($context['settings_message']) ? $context['settings_message'] : 'core_settings_saved'));
 	}
 
 	// Fill the config array.
-	require_once(SUBSDIR . '/Settings_Form.class.php');
 	Settings_Form::prepareServerSettingsContext($config_vars);
 }
 
@@ -287,6 +289,8 @@ function ModifyCookieSettings($return_config = false)
 	$context['post_url'] = $scripturl . '?action=admin;area=serversettings;sa=cookie;save';
 	$context['settings_title'] = $txt['cookies_sessions_settings'];
 
+	require_once(SUBSDIR . '/Settings_Form.class.php');
+
 	// Saving settings?
 	if (isset($_REQUEST['save']))
 	{
@@ -295,7 +299,7 @@ function ModifyCookieSettings($return_config = false)
 		if (!empty($_POST['globalCookiesDomain']) && strpos($boardurl, $_POST['globalCookiesDomain']) === false)
 			fatal_lang_error('invalid_cookie_domain', false);
 
-		saveSettings($config_vars);
+		Settings_Form::saveSettings($config_vars);
 
 		// If the cookie name was changed, reset the cookie.
 		if ($cookiename != $_POST['cookiename'])
@@ -317,7 +321,6 @@ function ModifyCookieSettings($return_config = false)
 	}
 
 	// Fill the config array.
-	require_once(SUBSDIR . '/Settings_Form.class.php');
 	Settings_Form::prepareServerSettingsContext($config_vars);
 }
 
@@ -382,12 +385,14 @@ function ModifyCacheSettings($return_config = false)
 	if ($return_config)
 		return $config_vars;
 
+	require_once(SUBSDIR . '/Settings_Form.class.php');
+
 	// Saving again?
 	if (isset($_GET['save']))
 	{
 		call_integration_hook('integrate_save_cache_settings');
 
-		saveSettings($config_vars);
+		Settings_Form::saveSettings($config_vars);
 
 		// we need to save the $cache_enable to $modSettings as well
 		updatesettings(array('cache_enable' => (int) $_POST['cache_enable']));
@@ -406,8 +411,7 @@ function ModifyCacheSettings($return_config = false)
 
 	createToken('admin-ssc');
 
-	// Prepare for the template.
-	require_once(SUBSDIR . '/Settings_Form.class.php');
+	// Prepare settings for display in the template.
 	Settings_Form::prepareServerSettingsContext($config_vars);
 }
 
@@ -504,113 +508,6 @@ function ModifyLoadBalancingSettings($return_config = false)
 	createToken('admin-ssc');
 	createToken('admin-dbsc');
 	Settings_Form::prepareDBSettingContext($config_vars);
-}
-
-/**
- * Helper function. Saves settings by putting them in Settings.php or saving them in the settings table.
- *
- * - Saves those settings set from ?action=admin;area=serversettings.
- * - Requires the admin_forum permission.
- * - Contains arrays of the types of data to save into Settings.php.
- *
- * @param $config_vars
- */
-function saveSettings(&$config_vars)
-{
-	global $sc, $cookiename, $modSettings, $user_settings;
-	global $context;
-
-	validateToken('admin-ssc');
-
-	// lets be sure we have settings at hand
-	require_once(SUBSDIR . '/Settings_Form.class.php');
-
-	// Fix the darn stupid cookiename! (more may not be allowed, but these for sure!)
-	if (isset($_POST['cookiename']))
-		$_POST['cookiename'] = preg_replace('~[,;\s\.$]+~u', '', $_POST['cookiename']);
-
-	// Fix the forum's URL if necessary.
-	if (isset($_POST['boardurl']))
-	{
-		if (substr($_POST['boardurl'], -10) == '/index.php')
-			$_POST['boardurl'] = substr($_POST['boardurl'], 0, -10);
-		elseif (substr($_POST['boardurl'], -1) == '/')
-			$_POST['boardurl'] = substr($_POST['boardurl'], 0, -1);
-		if (substr($_POST['boardurl'], 0, 7) != 'http://' && substr($_POST['boardurl'], 0, 7) != 'file://' && substr($_POST['boardurl'], 0, 8) != 'https://')
-			$_POST['boardurl'] = 'http://' . $_POST['boardurl'];
-	}
-
-	// Any passwords?
-	$config_passwords = array(
-		'db_passwd',
-		'ssi_db_passwd',
-	);
-
-	// All the strings to write.
-	$config_strs = array(
-		'mtitle', 'mmessage',
-		'language', 'mbname', 'boardurl',
-		'cookiename',
-		'webmaster_email',
-		'db_name', 'db_user', 'db_server', 'db_prefix', 'ssi_db_user',
-		'cache_accelerator', 'cache_memcached',
-	);
-
-	// All the numeric variables.
-	$config_ints = array(
-		'cache_enable',
-	);
-
-	// All the checkboxes.
-	$config_bools = array(
-		'db_persist', 'db_error_send',
-		'maintenance',
-	);
-
-	// Now sort everything into a big array, and figure out arrays and etc.
-	$new_settings = array();
-	foreach ($config_passwords as $config_var)
-	{
-		if (isset($_POST[$config_var][1]) && $_POST[$config_var][0] == $_POST[$config_var][1])
-			$new_settings[$config_var] = '\'' . addcslashes($_POST[$config_var][0], '\'\\') . '\'';
-	}
-	foreach ($config_strs as $config_var)
-	{
-		if (isset($_POST[$config_var]))
-			$new_settings[$config_var] = '\'' . addcslashes($_POST[$config_var], '\'\\') . '\'';
-	}
-	foreach ($config_ints as $config_var)
-	{
-		if (isset($_POST[$config_var]))
-			$new_settings[$config_var] = (int) $_POST[$config_var];
-	}
-	foreach ($config_bools as $key)
-	{
-		if (!empty($_POST[$key]))
-			$new_settings[$key] = '1';
-		else
-			$new_settings[$key] = '0';
-	}
-
-	// Save the relevant settings in the Settings.php file.
-	require_once(SUBSDIR . '/Admin.subs.php');
-	updateSettingsFile($new_settings);
-
-	// Now loop through the remaining (database-based) settings.
-	$new_settings = array();
-	foreach ($config_vars as $config_var)
-	{
-		// We just saved the file-based settings, so skip their definitions.
-		if (!is_array($config_var) || $config_var[2] == 'file')
-			continue;
-
-		// Rewrite the definition a bit.
-		$new_settings[] = array($config_var[3], $config_var[0]);
-	}
-
-	// Save the new database-based settings, if any.
-	if (!empty($new_settings))
-		Settings_Form::saveDBSettings($new_settings);
 }
 
 /**
