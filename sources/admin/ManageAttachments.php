@@ -200,7 +200,7 @@ function action_attachments($return_config = false)
 
 	// These are very likely to come in handy! (i.e. without them we're doomed!)
 	require_once(ADMINDIR . '/ManagePermissions.php');
-	require_once(ADMINDIR . '/ManageServer.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Saving settings?
 	if (isset($_GET['save']))
@@ -256,7 +256,7 @@ function action_attachments($return_config = false)
 
 		call_integration_hook('integrate_save_attachment_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=manageattachments;sa=attachments');
 	}
 
@@ -341,7 +341,8 @@ function action_avatars($return_config = false)
 		return $config_vars;
 
 	// We need this file for the settings template.
-	require_once(ADMINDIR . '/ManageServer.php');
+	require_once(ADMINDIR . '/ManageServer.php'); // @todo remove
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Saving avatar settings?
 	if (isset($_GET['save']))
@@ -354,7 +355,7 @@ function action_avatars($return_config = false)
 
 		call_integration_hook('integrate_save_avatar_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=manageattachments;sa=avatars');
 	}
 

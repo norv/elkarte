@@ -39,6 +39,7 @@ function loadGeneralSettingParameters($subActions = array(), $defaultAction = ''
 
 	// Will need the utility functions from here.
 	require_once(ADMINDIR . '/ManageServer.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	$context['sub_template'] = 'show_settings';
 
@@ -494,7 +495,7 @@ function ModifyCoreFeatures($return_config = false)
 }
 
 /**
- * Config array for chaning the basic forum settings
+ * Config array for changing the basic forum settings
  * Accessed  from ?action=admin;area=featuresettings;sa=basic;
  *
  * @param $return_config
@@ -570,7 +571,7 @@ function ModifyBasicSettings($return_config = false)
 
 		call_integration_hook('integrate_save_basic_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 
 		writeLog();
 		redirectexit('action=admin;area=featuresettings;sa=basic');
@@ -626,7 +627,7 @@ function ModifyGeneralSecuritySettings($return_config = false)
 	{
 		checkSession();
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 
 		call_integration_hook('integrate_save_general_security_settings');
 
@@ -682,7 +683,7 @@ function ModifyLayoutSettings($return_config = false)
 
 		call_integration_hook('integrate_save_layout_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		writeLog();
 
 		redirectexit('action=admin;area=featuresettings;sa=layout');
@@ -731,7 +732,7 @@ function ModifyKarmaSettings($return_config = false)
 
 		call_integration_hook('integrate_save_karma_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=featuresettings;sa=karma');
 	}
 
@@ -796,7 +797,7 @@ function ModifyModerationSettings($return_config = false)
 
 		call_integration_hook('integrate_save_karma_settings', array(&$save_vars));
 
-		saveDBSettings($save_vars);
+		Settings::saveDBSettings($save_vars);
 		redirectexit('action=admin;area=securitysettings;sa=moderation');
 	}
 
@@ -960,7 +961,7 @@ function ModifySpamSettings($return_config = false)
 		call_integration_hook('integrate_save_spam_settings', array(&$save_vars));
 
 		// Now save.
-		saveDBSettings($save_vars);
+		Settings::saveDBSettings($save_vars);
 		cache_put_data('verificationQuestionIds', null, 300);
 		redirectexit('action=admin;area=securitysettings;sa=spam');
 	}
@@ -1098,7 +1099,7 @@ function ModifyBadBehaviorSettings($return_config = false)
 			updateSettings(array($list => serialize($this_list), $list . '_desc' => serialize($this_desc)));
 		}
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=securitysettings;sa=badbehavior');
 	}
 
@@ -1453,7 +1454,7 @@ function ModifySignatureSettings($return_config = false)
 		$save_vars = array();
 		$save_vars[] = array('text', 'signature_settings');
 
-		saveDBSettings($save_vars);
+		Settings::saveDBSettings($save_vars);
 		redirectexit('action=admin;area=featuresettings;sa=sig');
 	}
 
@@ -2243,7 +2244,7 @@ function ModifyPruningSettings($return_config = false)
 		return $config_vars;
 
 	// We'll need this in a bit.
-	require_once(ADMINDIR . '/ManageServer.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Saving?
 	if (isset($_GET['save']))
@@ -2269,7 +2270,7 @@ function ModifyPruningSettings($return_config = false)
 		else
 			$_POST['pruningOptions'] = '';
 
-		saveDBSettings($savevar);
+		Settings::saveDBSettings($savevar);
 		redirectexit('action=admin;area=logs;sa=pruning');
 	}
 
@@ -2327,7 +2328,7 @@ function ModifyGeneralModSettings($return_config = false)
 		call_integration_hook('integrate_save_general_mod_settings', array(&$save_vars));
 
 		// This line is to help mod authors do a search/add after if you want to add something here. Keyword: FOOT TAPPING SUCKS!
-		saveDBSettings($save_vars);
+		Settings::saveDBSettings($save_vars);
 
 		// This line is to help mod authors do a search/add after if you want to add something here. Keyword: I LOVE TEA!
 		redirectexit('action=admin;area=modsettings;sa=general');

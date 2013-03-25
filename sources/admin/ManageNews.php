@@ -970,8 +970,8 @@ function ModifyNewsSettings($return_config = false)
 	$context['page_title'] = $txt['admin_edit_news'] . ' - ' . $txt['settings'];
 	$context['sub_template'] = 'show_settings';
 
-	// Needed for the settings template.
-	require_once(ADMINDIR . '/ManageServer.php');
+	// Needed for the settings
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Wrap it all up nice and warm...
 	$context['post_url'] = $scripturl . '?action=admin;area=news;save;sa=settings';
@@ -989,7 +989,7 @@ function ModifyNewsSettings($return_config = false)
 
 		call_integration_hook('integrate_save_news_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=news;sa=settings');
 	}
 

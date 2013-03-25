@@ -118,8 +118,8 @@ function ManageSearchEngineSettings($return_config = false)
 	if (isset($_POST['spider_group']) && !isset($config_vars['spider_group'][2][$_POST['spider_group']]))
 		$_POST['spider_group'] = 0;
 
-	// We'll want this for our easy save.
-	require_once(ADMINDIR . '/ManageServer.php');
+	// We'll want this for our easy settings save.
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Setup the template.
 	$context['page_title'] = $txt['settings'];
@@ -131,7 +131,7 @@ function ManageSearchEngineSettings($return_config = false)
 		checkSession();
 
 		call_integration_hook('integrate_save_search_engine_settings');
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		recacheSpiderNames();
 		redirectexit('action=admin;area=sengines;sa=settings');
 	}

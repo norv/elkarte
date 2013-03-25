@@ -285,6 +285,9 @@ function ModifyMailSettings($return_config = false)
 
 	loadLanguage('EmailTemplates');
 
+	// we work with settings too, here.
+	require_once(SUBSDIR . '/Settings.class.php');
+
 	$body = $txtBirthdayEmails[(empty($modSettings['birthday_email']) ? 'happy_birthday' : $modSettings['birthday_email']) . '_body'];
 	$subject = $txtBirthdayEmails[(empty($modSettings['birthday_email']) ? 'happy_birthday' : $modSettings['birthday_email']) . '_subject'];
 
@@ -337,7 +340,7 @@ function ModifyMailSettings($return_config = false)
 		unset($config_vars['birthday_subject'], $config_vars['birthday_body']);
 		call_integration_hook('integrate_save_mail_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=mailqueue;sa=settings');
 	}
 

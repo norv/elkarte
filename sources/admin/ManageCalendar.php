@@ -333,7 +333,7 @@ function ModifyCalendarSettings($return_config = false)
 		return $config_vars;
 
 	// Get the settings template fired up.
-	require_once(ADMINDIR . '/ManageServer.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Some important context stuff
 	$context['page_title'] = $txt['calendar_settings'];
@@ -348,7 +348,7 @@ function ModifyCalendarSettings($return_config = false)
 	{
 		checkSession();
 		call_integration_hook('integrate_save_calendar_settings');
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 
 		// Update the stats in case.
 		updateSettings(array(

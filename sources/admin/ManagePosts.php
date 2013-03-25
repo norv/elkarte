@@ -209,8 +209,8 @@ function ModifyPostSettings($return_config = false)
 	if ($return_config)
 		return $config_vars;
 
-	// We'll want this for our easy save.
-	require_once(ADMINDIR . '/ManageServer.php');
+	// We'll want this for our easy settings save.
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Setup the template.
 	$context['page_title'] = $txt['manageposts_settings'];
@@ -242,7 +242,7 @@ function ModifyPostSettings($return_config = false)
 
 		call_integration_hook('integrate_save_post_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=postsettings;sa=posts');
 	}
 
@@ -284,8 +284,10 @@ function ModifyBBCSettings($return_config = false)
 	if ($return_config)
 		return $config_vars;
 
+	// Prepare, edit, save settings.
+	require_once(SUBSDIR . '/Settings.class.php');
+
 	// Setup the template.
-	require_once(ADMINDIR . '/ManageServer.php');
 	$context['sub_template'] = 'show_settings';
 	$context['page_title'] = $txt['manageposts_bbc_settings_title'];
 
@@ -311,7 +313,7 @@ function ModifyBBCSettings($return_config = false)
 
 		call_integration_hook('integrate_save_bbc_settings', array($bbcTags));
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=postsettings;sa=bbc');
 	}
 
@@ -361,8 +363,8 @@ function ModifyTopicSettings($return_config = false)
 	if ($return_config)
 		return $config_vars;
 
-	// Get the settings template ready.
-	require_once(ADMINDIR . '/ManageServer.php');
+	// Get the settings ready.
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Setup the template.
 	$context['page_title'] = $txt['manageposts_topic_settings'];
@@ -374,7 +376,7 @@ function ModifyTopicSettings($return_config = false)
 		checkSession();
 		call_integration_hook('integrate_save_topic_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 		redirectexit('action=admin;area=postsettings;sa=topics');
 	}
 

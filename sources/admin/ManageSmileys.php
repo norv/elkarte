@@ -151,8 +151,10 @@ function EditSmileySettings($return_config = false)
 	if ($return_config)
 		return $config_vars;
 
+	// Make sure we can handle Settings.
+	require_once(SUBSDIR . '/Settings.class.php');
+
 	// Setup the basics of the settings template.
-	require_once(ADMINDIR . '/ManageServer.php');
 	$context['sub_template'] = 'show_settings';
 
 	// Finish up the form...
@@ -173,7 +175,7 @@ function EditSmileySettings($return_config = false)
 
 		call_integration_hook('integrate_save_smiley_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 
 		cache_put_data('parsing_smileys', null, 480);
 		cache_put_data('posting_smileys', null, 480);
@@ -544,7 +546,7 @@ function AddSmiley()
 	$context['smileys_dir_found'] = is_dir($context['smileys_dir']);
 	$context['smiley_sets'] = explode(',', $modSettings['smiley_sets_known']);
 	$context['sub_template'] = 'addsmiley';
-	
+
 	$set_names = explode("\n", $modSettings['smiley_sets_names']);
 	foreach ($context['smiley_sets'] as $i => $set)
 		$context['smiley_sets'][$i] = array(

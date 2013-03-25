@@ -118,8 +118,8 @@ function ModifySubscriptionSettings($return_config = false)
 	if ($return_config)
 		return $config_vars;
 
-	// Get the settings template fired up.
-	require_once(ADMINDIR . '/ManageServer.php');
+	// Get the settings ready
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Some important context stuff
 	$context['page_title'] = $txt['settings'];
@@ -176,7 +176,7 @@ function ModifySubscriptionSettings($return_config = false)
 		}
 		unset($config_vars['dummy_currency']);
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 
 		redirectexit('action=admin;area=paidsubscribe;sa=settings');
 	}

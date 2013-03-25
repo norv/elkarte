@@ -280,7 +280,7 @@ function ModifyRegistrationSettings($return_config = false)
 	global $txt, $context, $scripturl, $modSettings;
 
 	// This is really quite wanting.
-	require_once(ADMINDIR . '/ManageServer.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	$config_vars = array(
 			array('select', 'registration_method', array($txt['setting_registration_standard'], $txt['setting_registration_activate'], $txt['setting_registration_approval'], $txt['setting_registration_disabled'])),
@@ -317,7 +317,7 @@ function ModifyRegistrationSettings($return_config = false)
 
 		call_integration_hook('integrate_save_registration_settings');
 
-		saveDBSettings($config_vars);
+		Settings::saveDBSettings($config_vars);
 
 		redirectexit('action=admin;area=regcenter;sa=settings');
 	}
