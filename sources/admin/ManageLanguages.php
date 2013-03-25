@@ -778,7 +778,7 @@ function ModifyLanguageSettings($return_config = false)
 	global $scripturl, $context, $txt, $settings, $smcFunc;
 
 	// We'll want to save them someday.
-	require_once(SUBSDIR . '/Settings.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 
 	// Warn the user if the backup of Settings.php failed.
 	$settings_not_writable = !is_writable(BOARDDIR . '/Settings.php');

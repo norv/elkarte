@@ -184,7 +184,7 @@ function ModifyGeneralSettings($return_config = false)
 	}
 
 	// Fill the config array.
-	require_once(SUBSDIR . '/Settings.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 	Settings::prepareServerSettingsContext($config_vars);
 }
 
@@ -249,7 +249,7 @@ function ModifyDatabaseSettings($return_config = false)
 	}
 
 	// Fill the config array.
-	require_once(SUBSDIR . '/Settings.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 	Settings::prepareServerSettingsContext($config_vars);
 }
 
@@ -317,7 +317,7 @@ function ModifyCookieSettings($return_config = false)
 	}
 
 	// Fill the config array.
-	require_once(SUBSDIR . '/Settings.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 	Settings::prepareServerSettingsContext($config_vars);
 }
 
@@ -407,7 +407,7 @@ function ModifyCacheSettings($return_config = false)
 	createToken('admin-ssc');
 
 	// Prepare for the template.
-	require_once(SUBSDIR . '/Settings.php');
+	require_once(SUBSDIR . '/Settings.class.php');
 	Settings::prepareServerSettingsContext($config_vars);
 }
 
