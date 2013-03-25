@@ -811,7 +811,7 @@ function ModifyLanguageSettings($return_config = false)
 
 		call_integration_hook('integrate_save_language_settings', array(&$config_vars));
 
-		Settings_Form::saveSettings($config_vars);
+		Settings_Form::save($config_vars);
 		redirectexit('action=admin;area=languages;sa=settings');
 	}
 
