@@ -182,10 +182,19 @@ class Calendar_Controller
 
 		// Cast this for safety...
 		if (isset($_REQUEST['eventid']))
+		{
 			$_REQUEST['eventid'] = (int) $_REQUEST['eventid'];
+			$event_id = (int) $_REQUEST['eventid'];
+			$event = getEventProperties($event_id);
+		}
+		else
+		{
+			$event = array();
+			$event_id = 0;
+		}
 
 		// Submitting?
-		if (isset($_POST[$context['session_var']], $_REQUEST['eventid']))
+		if (isset($_POST[$context['session_var']]) && !empty($event_id))
 		{
 			checkSession();
 
@@ -194,11 +203,11 @@ class Calendar_Controller
 				validateEventPost();
 
 			// If you're not allowed to edit any events, you have to be the poster.
-			if ($_REQUEST['eventid'] > 0 && !allowedTo('calendar_edit_any'))
-				isAllowedTo('calendar_edit_' . (!empty($user_info['id']) && getEventPoster($_REQUEST['eventid']) == $user_info['id'] ? 'own' : 'any'));
+			if ($event_id > 0 && !allowedTo('calendar_edit_any'))
+				isAllowedTo('calendar_edit_' . (!empty($user_info['id']) && !empty($event['member']) && $event['member'] == $user_info['id'] ? 'own' : 'any'));
 
 			// New - and directing?
-			if ($_REQUEST['eventid'] == -1 && isset($_POST['link_to_board']))
+			if ($event_id == -1 && isset($_POST['link_to_board']))
 			{
 				$_REQUEST['calendar'] = 1;
 				require_once(CONTROLLERDIR . '/Post.controller.php');
@@ -206,7 +215,7 @@ class Calendar_Controller
 				return $controller->action_post();
 			}
 			// New...
-			elseif ($_REQUEST['eventid'] == -1)
+			elseif ($event_id == -1)
 			{
 				$eventOptions = array(
 					'board' => 0,
@@ -221,7 +230,7 @@ class Calendar_Controller
 
 			// Deleting...
 			elseif (isset($_REQUEST['deleteevent']))
-				removeEvent($_REQUEST['eventid']);
+				removeEvent($event_id);
 
 			// ... or just update it?
 			else
@@ -229,8 +238,7 @@ class Calendar_Controller
 				// There could be already a topic you are not allowed to modify
 				if (!allowedTo('post_new') && empty($modSettings['disableNoPostingCalendarEdits']))
 				{
-					$event = getEventProperties((int) $_REQUEST['eventid']);
-					$id_board = (int)$event['board'];
+					$id_board = (int) $event['board'];
 					$id_topic = (int) $event['topic']['id'];
 				}
 
@@ -254,7 +262,7 @@ class Calendar_Controller
 		}
 
 		// If we are not enabled... we are not enabled.
-		if (empty($modSettings['cal_allow_unlinked']) && empty($_REQUEST['eventid']))
+		if (empty($modSettings['cal_allow_unlinked']) && empty($event_id))
 		{
 			$_REQUEST['calendar'] = 1;
 			require_once(CONTROLLERDIR . '/Post.controller.php');
@@ -263,7 +271,7 @@ class Calendar_Controller
 		}
 
 		// New?
-		if (!isset($_REQUEST['eventid']))
+		if (empty($event_id))
 		{
 			$today = getdate();
 
@@ -297,7 +305,8 @@ class Calendar_Controller
 		}
 		else
 		{
-			$context['event'] = getEventProperties($_REQUEST['eventid']);
+			// Reload the event after making changes
+			$context['event'] = getEventProperties($event_id);
 
 			if ($context['event'] === false)
 				fatal_lang_error('no_access', false);
@@ -321,7 +330,7 @@ class Calendar_Controller
 		loadTemplate('Calendar');
 		$context['sub_template'] = 'event_post';
 
-		$context['page_title'] = isset($_REQUEST['eventid']) ? $txt['calendar_edit'] : $txt['calendar_post_event'];
+		$context['page_title'] = !empty($event_id) ? $txt['calendar_edit'] : $txt['calendar_post_event'];
 		$context['linktree'][] = array(
 			'name' => $context['page_title'],
 		);
