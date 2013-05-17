@@ -740,8 +740,8 @@ class Admin_Controller
 		}
 
 		// Load the credits stuff.
-		require_once(CONTROLLERDIR . '/Who.controller.php');
-		action_credits(true);
+		require_once(SUBSDIR . '/About.subs.php');
+		loadCredits(true);
 
 		// This makes it easier to get the latest news with your time format.
 		$context['time_format'] = urlencode($user_info['time_format']);

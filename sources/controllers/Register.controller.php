@@ -109,13 +109,8 @@ class Register_Controller
 		// If you have to agree to the agreement, it needs to be fetched from the file.
 		if ($context['require_agreement'])
 		{
-			// Have we got a localized one?
-			if (file_exists(BOARDDIR . '/agreement.' . $user_info['language'] . '.txt'))
-				$context['agreement'] = parse_bbc(file_get_contents(BOARDDIR . '/agreement.' . $user_info['language'] . '.txt'), true, 'agreement_' . $user_info['language']);
-			elseif (file_exists(BOARDDIR . '/agreement.txt'))
-				$context['agreement'] = parse_bbc(file_get_contents(BOARDDIR . '/agreement.txt'), true, 'agreement');
-			else
-				$context['agreement'] = '';
+			require_once(SUBSDIR . '/About.subs.php');
+			$context['agreement'] = getRegistrationAgreement($user_info['language']);
 
 			// Nothing to show, lets disable registration and inform the admin of this error
 			if (empty($context['agreement']))
