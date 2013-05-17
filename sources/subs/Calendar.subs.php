@@ -1186,3 +1186,61 @@ function getHoliday($id_holiday)
 
 	return $holiday;
 }
+
+function getTopicsEvents($topics)
+{
+	global $smcFunc, $scripturl, $user_info, $context;
+
+	$topics = is_array($topics) ? $topics : array($topics);
+
+	// Any calendar information for this topic?
+	$request = $smcFunc['db_query']('', '
+		SELECT cal.id_topic, cal.id_event, cal.start_date, cal.end_date, cal.title, cal.id_member, mem.real_name
+		FROM {db_prefix}calendar AS cal
+			LEFT JOIN {db_prefix}members AS mem ON (mem.id_member = cal.id_member)
+		WHERE cal.id_topic IN({array_int:topics})
+		ORDER BY start_date',
+		array(
+			'topics' => $topics,
+		)
+	);
+
+	// First, try create a better time format, ignoring the "time" elements.
+	if (preg_match('~%[AaBbCcDdeGghjmuYy](?:[^%]*%[AaBbCcDdeGghjmuYy])*~', $user_info['time_format'], $matches) == 0 || empty($matches[0]))
+		$date_string = $user_info['time_format'];
+	else
+		$date_string = $matches[0];
+
+	$events = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		// Prepare the dates for being formatted.
+		$start_date = sscanf($row['start_date'], '%04d-%02d-%02d');
+		$start_date = mktime(12, 0, 0, $start_date[1], $start_date[2], $start_date[0]);
+		$end_date = sscanf($row['end_date'], '%04d-%02d-%02d');
+		$end_date = mktime(12, 0, 0, $end_date[1], $end_date[2], $end_date[0]);
+
+		if (!isset($events[$row['id_topic']]))
+			$events[$row['id_topic']] = array();
+
+		$events[$row['id_topic']][$row['id_event']] = array(
+			'id' => $row['id_event'],
+			'topic' => $row['id_topic'],
+			'title' => $row['title'],
+			'can_edit' => allowedTo('calendar_edit_any') || ($row['id_member'] == $user_info['id'] && allowedTo('calendar_edit_own')),
+			'modify_href' => $scripturl . '?action=post;msg=' . $topicinfo['id_first_msg'] . ';topic=' . $row['id_topic'] . '.0;calendar;eventid=' . $row['id_event'] . ';' . $context['session_var'] . '=' . $context['session_id'],
+			'can_export' => allowedTo('calendar_edit_any') || ($row['id_member'] == $user_info['id'] && allowedTo('calendar_edit_own')),
+			'export_href' => $scripturl . '?action=calendar;sa=ical;eventid=' . $row['id_event'] . ';' . $context['session_var'] . '=' . $context['session_id'],
+			'start_date' => standardTime($start_date, $date_string, 'none'),
+			'start_timestamp' => $start_date,
+			'end_date' => standardTime($end_date, $date_string, 'none'),
+			'end_timestamp' => $end_date,
+		);
+	}
+	$smcFunc['db_free_result']($request);
+
+	if (empty($events))
+		return array();
+
+	return count($events) > 1 ? $events : $events[0];
+}
