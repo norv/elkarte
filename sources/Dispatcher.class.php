@@ -128,6 +128,7 @@ class Site_Dispatcher
 		// $_GET['action'] => array($file, $function)
 		// $_GET['action'] => array($file, $class, $method)
 		$actionArray = array(
+			'about' => array('About.controller.php', 'About_Controller', 'callSubAction'),
 			'activate' => array('Register.controller.php', 'Register_Controller', 'action_activate'),
 			'admin' => array('Admin.php', 'AdminMain'),
 			'announce' => array('Announce.controller.php', 'Announce_Controller', 'action_index'),

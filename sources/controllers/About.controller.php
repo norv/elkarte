@@ -22,10 +22,42 @@ if (!defined('ELKARTE'))
 
 class About_Controller
 {
+	protected $default_sub_action = 'about';
+
 	public function __construct()
 	{
+		loadLanguage('About');
 		loadTemplate('About');
 		require_once(SUBSDIR . '/About.subs.php');
+	}
+
+	protected function getSubActions()
+	{
+		$sub_actions = array(
+			'about' => 'action_about',
+			'register-agreement' => 'action_registration_agreement',
+			'privacy' => 'action_privacy_policy',
+			'credits' => 'action_credits',
+			'staff' => 'action_staff',
+			'contact' => 'action_contact',
+		);
+
+		call_integration_hook('integrate_about_subactions', array(&$sub_actions));
+
+		return $sub_actions;
+	}
+
+	/**
+	 * Send the call off to the sub action
+	 * @todo put this in a parent class
+	 */
+	public function callSubAction()
+	{
+		$sub_actions = $this->getSubActions();
+
+		$sub_action = isset($_GET['sa']) && isset($sub_actions[$_GET['sa']]) ? $sub_actions[$_GET['sa']] : $sub_actions[$this->default_sub_action];
+
+		return $this->$sub_action();
 	}
 
 	public function action_about()
@@ -52,7 +84,15 @@ class About_Controller
 
 	public function action_staff()
 	{
-		
+		global $modSettings;
+
+		require_once(SUBSDIR . '/Membergroups.subs.php');
+		$staff_groups = !empty($modSettings['staff_groups']) ? explode(',', $modSettings['staff_groups']) : 1;
+
+		$result = getMembersInGroups($staff_groups);
+
+		$members = $result['members'];
+		$groups = $result['groups'];
 	}
 
 	public function action_contact()

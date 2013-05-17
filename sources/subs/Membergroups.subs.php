@@ -807,6 +807,43 @@ function membersInGroups($postGroups, $normalGroups = array(), $include_hidden =
 
 	return $groups;
 }
+/**
+ * Get the members in specific groups
+ *
+ * @param array $group_list an array of groups id
+ * @param bool $include_hidden = true if include additional groups
+ */
+function getMembersInGroups(array $group_list, $include_additional = true)
+{
+	global $smcFunc;
+
+	$members = array();
+	$groups = array();
+
+	// Find people who are members of this group...
+	$query = $smcFunc['db_query']('', '
+		SELECT mg.id_group, m.id_member
+		FROM {db_prefix}membergroups AS mg
+			INNER JOIN {db_prefix}members AS mem ON (mem.id_group = mg.id_group ' . ($include_additional ? '
+				OR (mem.additional_groups != {string:blank_string} AND FIND_IN_SET(mg.id_group, mem.additional_groups) != 0)' : '') . ')
+		WHERE mg.id_group IN ({array_int:group_list})',
+		array(
+			'group_list' => $group_list,
+			'blank_string' => '',
+		)
+	);
+	while ($row = $smcFunc['db_fetch_assoc']($query))
+	{
+		$groups[$row['id_group']][] = $row['id_member'];
+		$members[$row['id_member']][] = $row['id_group'];
+	}
+	$smcFunc['db_free_result']($query);
+
+	return array(
+		'members' => $members,
+		'groups' => $groups,
+	);
+}
 
 /**
  * Returns details of membergroups based on the id
