@@ -229,6 +229,7 @@ class Calendar_Controller
 				// There could be already a topic you are not allowed to modify
 				if (!allowedTo('post_new') && empty($modSettings['disableNoPostingCalendarEdits']))
 				{
+					// Fixes http://dev.simplemachines.org/mantis/view.php?id=4734
 					$request = $smcFunc['db_query']('', '
 						SELECT id_board, id_topic
 						FROM {db_prefix}calendar
