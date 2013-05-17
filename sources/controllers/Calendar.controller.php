@@ -229,25 +229,17 @@ class Calendar_Controller
 				// There could be already a topic you are not allowed to modify
 				if (!allowedTo('post_new') && empty($modSettings['disableNoPostingCalendarEdits']))
 				{
-					// Fixes http://dev.simplemachines.org/mantis/view.php?id=4734
-					$request = $smcFunc['db_query']('', '
-						SELECT id_board, id_topic
-						FROM {db_prefix}calendar
-						WHERE id_event = {int:id_event}
-						LIMIT 1',
-						array(
-							'id_event' => $_REQUEST['eventid'],
-					));
-					list ($id_board, $id_topic) = $smcFunc['db_fetch_row']($request);
-					$smcFunc['db_free_result']($request);
+					$event = getEventProperties((int) $_REQUEST['eventid']);
+					$id_board = (int)$event['board'];
+					$id_topic = (int) $event['topic']['id'];
 				}
 
 				$eventOptions = array(
 					'title' => $smcFunc['substr']($_REQUEST['evtitle'], 0, 100),
 					'span' => empty($modSettings['cal_allowspan']) || empty($_POST['span']) || $_POST['span'] == 1 || empty($modSettings['cal_maxspan']) || $_POST['span'] > $modSettings['cal_maxspan'] ? 0 : min((int) $modSettings['cal_maxspan'], (int) $_POST['span'] - 1),
 					'start_date' => strftime('%Y-%m-%d', mktime(0, 0, 0, (int) $_REQUEST['month'], (int) $_REQUEST['day'], (int) $_REQUEST['year'])),
-					'board' => isset($id_board) ? (int) $id_board : 0,
-					'topic' => isset($id_topic) ? (int) $id_topic : 0,
+					'board' => isset($id_board) ? $id_board : 0,
+					'topic' => isset($id_topic) ? $id_topic : 0,
 				);
 
 				modifyEvent($_REQUEST['eventid'], $eventOptions);
