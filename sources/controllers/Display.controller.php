@@ -35,10 +35,10 @@ class Display_Controller
 	function action_index()
 	{
 		global $scripturl, $txt, $modSettings, $context, $settings;
-
-		$db = database();
 		global $options, $user_info, $board_info, $topic, $board;
 		global $attachments, $messages_request, $topicinfo, $language, $all_posters;
+
+		$db = database();
 
 		// What are you gonna display if these are empty?!
 		if (empty($topic))
@@ -106,8 +106,6 @@ class Display_Controller
 		$topic_tables = array();
 		call_integration_hook('integrate_display_topic', array(&$topic_selects, &$topic_tables, &$topic_parameters));
 
-		// @todo Why isn't this cached?
-		// @todo if we get id_board in this query and cache it, we can save a query on posting
 		// Load the topic details
 		$topicinfo = getTopicInfo($topic_parameters, 'all', $topic_selects, $topic_tables);
 		if (empty($topicinfo))
@@ -1030,7 +1028,7 @@ class Display_Controller
 
 /**
  * Callback for the message display.
- * It actually gets and prepares the message context.
+ * It gets and prepares the message context.
  * This function will start over from the beginning if reset is set to true, which is
  * useful for showing an index before or after the posts.
  *
