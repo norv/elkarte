@@ -56,8 +56,8 @@ $upcontext['steps'] = array(
 	3 => array(4, 'Database Changes', 'action_databaseChanges', 70),
 	4 => array(5, 'Delete Upgrade', 'action_deleteUpgrade', 1),
 );
-// Just to remember which one has files in it.
-$upcontext['database_step'] = 3;
+
+// Time, more time.
 @set_time_limit(600);
 if (!ini_get('safe_mode'))
 {
@@ -1007,6 +1007,8 @@ function action_databaseChanges()
 	$upcontext['sub_template'] = isset($_GET['xml']) ? 'database_xml' : 'database_changes';
 	$upcontext['page_title'] = 'Database Changes';
 
+	$db = database();
+
 	// All possible files.
 	// Name, version, insert_on_complete.
 	$files = array(
@@ -1014,7 +1016,7 @@ function action_databaseChanges()
 		array('upgrade_1-1.sql', '2.0', '2.0 a'),
 		array('upgrade_2-0_' . $db_type . '.sql', '2.1', '2.1 dev0'),
 		// array('upgrade_2-1_' . $db_type . '.sql', '3.0', '3.0 dev0'),
-		array('upgrade_elk_1-0_' . $db_type . '.sql', '1.1', CURRENT_VERSION),
+		array('upgrade_elk_1_0_' . $db_type . '.php', '1.1', CURRENT_VERSION, 'Upgrade_Elk_1_0_' . $db_type),
 	);
 
 	// How many files are there in total?
@@ -1047,7 +1049,10 @@ function action_databaseChanges()
 			// Do we actually need to do this still?
 			if (!isset($modSettings['elkVersion']) || $modSettings['elkVersion'] < $file[1])
 			{
-				$nextFile = parse_sql(dirname(__FILE__) . '/' . $file[0]);
+				if (substr($file[0], -4) == '.php')
+					$nextFile = parse_php(dirname(__FILE__) . '/' . $file[0], $file[3]);
+				else
+					$nextFile = parse_sql(dirname(__FILE__) . '/' . $file[0]);
 				if ($nextFile)
 				{
 					// Only update the version of this if complete.
@@ -1103,6 +1108,7 @@ function action_deleteUpgrade()
 	if (!isset($_GET['ssi']) && !$command_line)
 		redirectLocation('&ssi=1');
 
+	// The end is just the begining...
 	$upcontext['sub_template'] = 'upgrade_complete';
 	$upcontext['page_title'] = 'Upgrade Complete';
 
@@ -1114,19 +1120,11 @@ function action_deleteUpgrade()
 		'upgradeData' => '#remove#',
 	);
 
-	// Are we in maintenance mode?
-	if (isset($upcontext['user']['main']))
-	{
-		if ($command_line)
-			echo ' * ';
-		$upcontext['removed_maintenance'] = true;
-		$changes['maintenance'] = $upcontext['user']['main'];
-	}
-	// Otherwise if somehow we are in 2 let's go to 1.
-	elseif (!empty($maintenance) && $maintenance == 2)
+	// Lets tone down maintenance mode.
+	if (!empty($maintenance) && $maintenance == 2)
 		$changes['maintenance'] = 1;
 
-	// Wipe this out...
+	// No more of this...
 	$upcontext['user'] = array();
 
 	// Make a backup of Settings.php first as otherwise earlier changes are lost.
@@ -1466,6 +1464,147 @@ function fixRelativePath($path)
 	return addslashes(preg_replace(array('~^\.([/\\\]|$)~', '~[/]+~', '~[\\\]+~', '~[/\\\]$~'), array($install_path . '$1', '/', '\\', ''), $path));
 }
 
+function parse_php($filename, $class_name)
+{
+	global $db_prefix, $boardurl, $command_line, $file_steps, $step_progress, $custom_warning;
+	global $upcontext, $support_js, $is_debug, $db_connection, $database, $db_type, $db_character_set;
+	global $modSettings, $db_unbuffered;
+
+	$db = database();
+
+	// Our custom error handler - does nothing but does stop public errors from XML!
+	if (!function_exists('php_error_handler'))
+	{
+		function php_error_handler($errno, $errstr, $errfile, $errline)
+		{
+			global $support_js;
+
+			if ($support_js)
+				return true;
+			else
+				echo 'Error: ' . $errstr . ' File: ' . $errfile . ' Line: ' . $errline;
+		}
+	}
+
+	// Make our own error handler.
+	set_error_handler('php_error_handler');
+
+	$endl = $command_line ? "\n" : '<br />' . "\n";
+
+	require_once($filename);
+	$upgrade = new $class_name();
+
+	$current_type = 'php';
+	$current_data = '';
+	$substep = 0;
+
+	$modSettings['disableQueryCheck'] = false;
+	$db_unbuffered = false;
+
+	// @todo make sure all newly created tables will have the proper characters set.
+
+	// Get the total number of steps within this upgrade, for the progress bar and text.
+	$file_steps = $upgrade->count_substeps();
+	$upcontext['total_items'] = $upgrade->count_categories();
+	$upcontext['debug_items'] = $file_steps;
+	$upcontext['current_item_num'] = 0;
+	$upcontext['current_item_name'] = '';
+	$upcontext['current_debug_item_num'] = 0;
+	$upcontext['current_debug_item_name'] = '';
+	// This array keeps a record of what we've done in case javascript is dead...
+	$upcontext['actioned_items'] = array();
+
+	$done_something = false;
+
+	// what are we doing? we don't know...
+	$current_step = $_GET['step'];
+	$current_substep = $_GET['substep'];
+
+	// Always flush.  Flush, flush, flush.  Flush, flush, flush, flush!  FLUSH!
+	if ($is_debug && !$support_js && $command_line)
+		flush();
+
+	$do_current = $substep >= $_GET['substep'];
+
+	foreach ($upgrade->steps() as $step)
+	{
+		// Write out something about our stage
+		$upcontext['current_item_num']++;
+		$upcontext['current_item_name'] = $step['description'];
+
+		// Remember command line
+		if (!$support_js && $do_current && $_GET['substep'] != 0 && $command_line)
+		{
+			echo ' Successful.', $endl;
+			flush();
+		}
+
+		$upcontext['actioned_items'][] = $step['description'];
+		if ($command_line)
+			echo ' * ';
+
+		foreach ($step['substeps'] as $sub_step)
+		{
+			$upcontext['step_progress'] += (100 / $upcontext['file_count']) / $file_steps;
+
+			$upcontext['current_debug_item_num']++;
+			// Write out the stage
+			$upcontext['current_debug_item_name'] = $sub_step['description'];
+
+			// if (isset($sub_step['function']))
+			$result = $upgrade->{$sub_step['function']}();
+
+			// Failure?
+			if ($result === false)
+				db_error();
+
+			// We are doing stuff! Announce it..
+			if (isset($_GET['xml']))
+			{
+				restore_error_handler();
+				return $upcontext['current_debug_item_num'] >= $upcontext['debug_items'] ? true : false;
+			}
+
+			if ($is_debug)
+				$upcontext['actioned_items'][] = $sub_step['description'];
+
+			if ($substep < $_GET['substep'] && $substep + 1 >= $_GET['substep'])
+			{
+				if ($command_line)
+					echo ' * ';
+				else
+					$upcontext['actioned_items'][] = $step['description'];
+			}
+
+			// Small step
+			nextSubstep(++$substep);
+		}
+
+		// If this is xml based and we're just getting the item name then that's grand.
+		if ($support_js && !isset($_GET['xml']) && $upcontext['current_debug_item_name'] != '')
+		{
+			restore_error_handler();
+			return false;
+		}
+
+		// Clean up by cleaning any step info.
+		$step_progress = array();
+		$custom_warning = '';
+	}
+
+	// Put back the error handler.
+	restore_error_handler();
+
+	if ($command_line)
+	{
+		echo ' Successful.' . "\n";
+		flush();
+	}
+
+	$_GET['substep'] = 0;
+	return true;
+}
+
 function parse_sql($filename)
 {
 	global $db_prefix, $boardurl, $command_line, $file_steps, $step_progress, $custom_warning;
@@ -1670,19 +1809,6 @@ function parse_sql($filename)
 
 				upgrade_query($current_data);
 
-				// @todo This will be how it kinda does it once mysql all stripped out - needed for postgre (etc).
-				/*
-				$result = $db->query('', $current_data, false, false);
-				// Went wrong?
-				if (!$result)
-				{
-					// Bit of a bodge - do we want the error?
-					if (!empty($upcontext['return_error']))
-					{
-						$upcontext['error_message'] = $db->last_error($db_connection);
-						return false;
-					}
-				}*/
 				$done_something = true;
 			}
 			$current_data = '';
@@ -1802,6 +1928,50 @@ function upgrade_query($string, $unbuffered = false)
 				return true;
 		}
 	}
+
+	// Get the query string so we pass everything.
+	$query_string = '';
+	foreach ($_GET as $k => $v)
+		$query_string .= ';' . $k . '=' . $v;
+	if (strlen($query_string) != 0)
+		$query_string = '?' . substr($query_string, 1);
+
+	if ($command_line)
+	{
+		echo 'Unsuccessful!  Database error message:', "\n", $db_error_message, "\n";
+		die;
+	}
+
+	// Bit of a bodge - do we want the error?
+	if (!empty($upcontext['return_error']))
+	{
+		$upcontext['error_message'] = $db_error_message;
+		return false;
+	}
+
+	// Otherwise we have to display this somewhere appropriate if possible.
+	$upcontext['forced_error_message'] = '
+			<strong>Unsuccessful!</strong><br />
+
+			<div style="margin: 2ex;">
+				This query:
+				<blockquote><tt>' . nl2br(htmlspecialchars(trim($string))) . ';</tt></blockquote>
+
+				Caused the error:
+				<blockquote>' . nl2br(htmlspecialchars($db_error_message)) . '</blockquote>
+			</div>
+
+			<form action="' . $upgradeurl . $query_string . '" method="post">
+				<input type="submit" value="Try again" class="button_submit" />
+			</form>
+		</div>';
+
+	upgradeExit();
+}
+
+function db_error()
+{
+	$db_error_message = $db->last_error($db_connection);
 
 	// Get the query string so we pass everything.
 	$query_string = '';
@@ -3699,6 +3869,9 @@ class template
 			$upcontext['continue'] = 1;
 	}
 
+	/**
+	 * Display the upgrade complete page.
+	 */
 	static function template_upgrade_complete()
 	{
 		global $upcontext, $modSettings, $upgradeurl, $disable_security, $settings, $db_prefix, $boardurl;
