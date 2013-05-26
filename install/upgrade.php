@@ -578,9 +578,6 @@ function action_welcomeLogin()
 		BOARDDIR . '/Settings_bak.php',
 	);
 
-	require_once(SOURCEDIR . '/Security.php');
-	$upcontext += createToken('login');
-
 	// Check the cache directory.
 	$CACHEDIR_temp = !defined('CACHEDIR') ? BOARDDIR . '/cache' : CACHEDIR;
 	if (!file_exists($CACHEDIR_temp))
@@ -647,6 +644,8 @@ function checkLogin()
 	// Login checks require hard database work :P
 	$db = database();
 
+	require_once(SOURCEDIR . '/Security.php');
+
 	// Are we trying to login?
 	if (isset($_POST['contbutt']) && (!empty($_POST['user']) || $disable_security))
 	{
@@ -657,6 +656,8 @@ function checkLogin()
 		// Get what we believe to be their details.
 		if (!$disable_security)
 		{
+			$tk = validateToken('login');
+
 			$request = $db->query('', '
 				SELECT id_member, member_name, passwd, id_group, additional_groups, lngfile
 				FROM {db_prefix}members
@@ -680,7 +681,7 @@ function checkLogin()
 				if (isset($_REQUEST['hash_passwrd']) && strlen($_REQUEST['hash_passwrd']) == 40)
 				{
 					// Challenge passed.
-					if ($_REQUEST['hash_passwrd'] == sha1($password . $upcontext['rid']))
+					if ($_REQUEST['hash_passwrd'] == sha1($password . $upcontext['rid'] . $tk))
 						$sha_passwd = $password;
 				}
 				else
@@ -785,6 +786,12 @@ function checkLogin()
 
 			return true;
 		}
+	}
+
+	if (!$disable_security)
+	{
+		cleanTokens(true);
+		$upcontext += createToken('login');
 	}
 
 	return false;
