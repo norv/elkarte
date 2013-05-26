@@ -1718,7 +1718,7 @@ function upgrade_query($string, $unbuffered = false)
 	global $db_name, $db_unbuffered;
 
 	// Retrieve our database
-	$db = database;
+	$db = database();
 
 	// Get the query result - working around some specific security - just this once!
 	$modSettings['disableQueryCheck'] = true;
