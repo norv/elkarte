@@ -22,6 +22,10 @@ define('CURRENT_LANG_VERSION', '1.0');
 $GLOBALS['required_php_version'] = '5.1.0';
 $GLOBALS['required_mysql_version'] = '4.0.18';
 
+// Disable the need for admins to login.
+// (You don't need to set this if you intend to run through CLI.)
+$disable_security = false;
+
 $database = array(
 		'type' => 'mysql',
 		'name' => 'MySQL',
@@ -40,9 +44,6 @@ $upgradeurl = $_SERVER['PHP_SELF'];
 
 // Where the images etc are kept.
 $oursite = 'http://www.elkarte.net';
-
-// Disable the need for admins to login?
-$disable_security = true;
 
 // How long, in seconds, must admin be inactive to allow someone else to run?
 $upcontext['inactive_timeout'] = 10;
@@ -266,7 +267,10 @@ foreach ($upcontext['steps'] as $num => $step)
 
 upgradeExit();
 
-// Exit the upgrade script.
+/**
+ * Ends execution of the upgrade script.
+ * @param bool $fallThrough = false
+ */
 function upgradeExit($fallThrough = false)
 {
 	global $upcontext, $upgradeurl, $command_line;
@@ -350,7 +354,11 @@ function upgradeExit($fallThrough = false)
 	die();
 }
 
-// Used to direct the user to another location.
+/**
+ * Used to direct the user to another location.
+ * @param string $location
+ * @param bool $addForm = true
+ */
 function redirectLocation($location, $addForm = true)
 {
 	global $upgradeurl, $upcontext, $command_line;
@@ -373,7 +381,9 @@ function redirectLocation($location, $addForm = true)
 	upgradeExit(true);
 }
 
-// Load all essential data and connect to the DB as this is pre SSI.php
+/**
+ * Load all essential data and connect to the DB as this is pre SSI.php.
+ */
 function loadEssentialData()
 {
 	global $db_server, $db_user, $db_passwd, $db_name, $db_connection, $db_prefix, $db_character_set, $db_type;
@@ -495,7 +505,9 @@ function initialize_inputs()
 	$_GET['substep'] = !empty($_GET['substep']) ? (int)$_GET['substep'] : 0;
 }
 
-// Step 0 - Let's welcome them in and ask them to login!
+/**
+ * Welcome screen.
+ */
 function action_welcomeLogin()
 {
 	global $db_prefix, $language, $modSettings, $upgradeurl, $upcontext, $disable_security;
@@ -603,7 +615,11 @@ function action_welcomeLogin()
 	return false;
 }
 
-// Step 0.5: Does the login work?
+/**
+ * Step 0.5: administrator login.
+ *
+ * @return bool
+ */
 function checkLogin()
 {
 	global $db_prefix, $language, $modSettings, $upgradeurl, $upcontext, $disable_security;
