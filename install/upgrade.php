@@ -42,7 +42,7 @@ $upgradeurl = $_SERVER['PHP_SELF'];
 $oursite = 'http://www.elkarte.net';
 
 // Disable the need for admins to login?
-$disable_security = false;
+$disable_security = true;
 
 // How long, in seconds, must admin be inactive to allow someone else to run?
 $upcontext['inactive_timeout'] = 10;
@@ -180,47 +180,15 @@ if (!function_exists('md5_hmac'))
 	}
 }
 
-// Don't do security check if on Yabbse or SMF
+// No password check if on Yabbse or SMF
 if (!isset($modSettings['elkVersion']))
 	$disable_security = true;
 
 // We should have the database easily at this point
 $db = database();
 
-// Does this exist?
-if (isset($modSettings['elkVersion']))
-{
-	$request = $db->query('', '
-		SELECT variable, value
-		FROM {db_prefix}themes
-		WHERE id_theme = {int:id_theme}
-			AND variable IN ({string:theme_url}, {string:theme_dir}, {string:images_url})',
-		array(
-			'id_theme' => 1,
-			'theme_url' => 'theme_url',
-			'theme_dir' => 'theme_dir',
-			'images_url' => 'images_url',
-			'db_error_skip' => true,
-		)
-	);
-	while ($row = $db->fetch_assoc($request))
-		$modSettings[$row['variable']] = $row['value'];
-	$db->free_result($request);
-}
-
-if (!isset($modSettings['theme_url']))
-{
-	$modSettings['theme_dir'] = BOARDDIR . '/themes/default';
-	$modSettings['theme_url'] = 'themes/default';
-	$modSettings['images_url'] = 'themes/default/images';
-}
-
-// @todo check for /Themes and fix
-
-if (!isset($settings['default_theme_url']))
-	$settings['default_theme_url'] = $modSettings['theme_url'];
-if (!isset($settings['default_theme_dir']))
-	$settings['default_theme_dir'] = $modSettings['theme_dir'];
+// Check the theme directories and URLs
+checkTheme();
 
 $upcontext['is_large_forum'] = (empty($modSettings['smfVersion']) || $modSettings['smfVersion'] <= '1.1 RC1' || empty($modSettings['elkVersion'])) && !empty($modSettings['totalMessages']) && $modSettings['totalMessages'] > 75000;
 // Default title...
@@ -228,7 +196,7 @@ $upcontext['page_title'] = isset($modSettings['elkVersion']) ? 'Updating Your El
 
 $upcontext['right_to_left'] = isset($txt['lang_rtl']) ? $txt['lang_rtl'] : false;
 
-// Have we got log data - if so use it (It will be clean!)
+// Log data (get from serialized upgrade_status: current step, random number etc)
 if (isset($_GET['data']))
 {
 	$upcontext['upgrade_status'] = unserialize(base64_decode($_GET['data']));
@@ -265,11 +233,11 @@ if ($upcontext['current_step'] != 0 || !empty($upcontext['user']['step']))
 if ($command_line)
 	cmdStep0();
 
-// Don't error if we're using xml.
+// Web: for xml requests, don't send errors
 if (isset($_GET['xml']))
 	$upcontext['return_error'] = true;
 
-// Loop through all the steps doing each one as required.
+// Ready to run: the steps of the upgrade. (each screen)
 $upcontext['overall_percent'] = 0;
 foreach ($upcontext['steps'] as $num => $step)
 {
@@ -797,7 +765,52 @@ function checkLogin()
 	return false;
 }
 
-// Step 1: Do the maintenance and backup.
+/**
+ * Check the default theme paths, and fix them.
+ */
+function checkTheme()
+{
+	global $modSettings, $settings;
+
+	// Theme information exists on SMF and Elk. (not YabbSE)
+	if (isset($modSettings['elkVersion']) || isset($modSettings['smfVersion']))
+	{
+		$request = $db->query('', '
+			SELECT variable, value
+			FROM {db_prefix}themes
+			WHERE id_theme = {int:id_theme}
+				AND variable IN ({string:theme_url}, {string:theme_dir}, {string:images_url})',
+			array(
+				'id_theme' => 1,
+				'theme_url' => 'theme_url',
+				'theme_dir' => 'theme_dir',
+				'images_url' => 'images_url',
+				'db_error_skip' => true,
+			)
+		);
+		while ($row = $db->fetch_assoc($request))
+			$modSettings[$row['variable']] = $row['value'];
+		$db->free_result($request);
+	}
+
+	if (!isset($modSettings['theme_url']))
+	{
+		$modSettings['theme_dir'] = BOARDDIR . '/themes/default';
+		$modSettings['theme_url'] = 'themes/default';
+		$modSettings['images_url'] = 'themes/default/images';
+	}
+
+	// @todo check for /Themes and fix
+
+	if (!isset($settings['default_theme_url']))
+		$settings['default_theme_url'] = $modSettings['theme_url'];
+	if (!isset($settings['default_theme_dir']))
+		$settings['default_theme_dir'] = $modSettings['theme_dir'];
+}
+
+/**
+ * Step 1: Do the maintenance and backup.
+ */
 function action_upgradeOptions()
 {
 	global $db_prefix, $command_line, $modSettings, $is_debug;
@@ -898,7 +911,9 @@ function action_upgradeOptions()
 	return true;
 }
 
-// Backup the database - why not...
+/**
+ * Backup the database.
+ */
 function action_backupDatabase()
 {
 	global $upcontext, $db_prefix, $command_line, $is_debug, $support_js, $file_steps;
@@ -976,7 +991,9 @@ function action_backupDatabase()
 	return false;
 }
 
-// Backup one table...
+/**
+ * Backup one table.
+ */
 function backupTable($table)
 {
 	global $is_debug, $command_line, $db_prefix;
@@ -994,7 +1011,9 @@ function backupTable($table)
 		echo ' done.';
 }
 
-// Step 2: Everything.
+/**
+ * Step 2: Database changes. (the main one!)
+ */
 function action_databaseChanges()
 {
 	global $db_prefix, $modSettings, $command_line;
@@ -1099,7 +1118,9 @@ function action_databaseChanges()
 	return false;
 }
 
-// Delete the damn thing!
+/**
+ * Last cleanups, and remove the scripts if possible.
+ */
 function action_deleteUpgrade()
 {
 	global $command_line, $language, $upcontext, $forum_version, $user_info, $maintenance, $db_type;
@@ -1137,7 +1158,7 @@ function action_deleteUpgrade()
 	// Can we delete the file?
 	$upcontext['can_delete_script'] = is_writable(dirname(__FILE__)) || is_writable(__FILE__);
 
-	// Now is the perfect time to fetch the SM files.
+	// Now is the perfect time to fetch the remote files.
 	if ($command_line)
 		cli_scheduled_fetchFiles();
 	else
@@ -1191,7 +1212,10 @@ function action_deleteUpgrade()
 	return false;
 }
 
-// Just like the built in one, but setup for CLI to not use themes.
+/**
+ * Fetches files from the remote server, but written for CLI
+ * to not use themes.
+ */
 function cli_scheduled_fetchFiles()
 {
 	global $txt, $language, $settings, $forum_version, $modSettings;
@@ -1250,6 +1274,9 @@ function cli_scheduled_fetchFiles()
 	return true;
 }
 
+/**
+ * Convert old YabbSE settings to theme settings.
+ */
 function convertSettingsToTheme()
 {
 	global $db_prefix, $modSettings;
@@ -1293,7 +1320,11 @@ function convertSettingsToTheme()
 	}
 }
 
-// This function only works with MySQL but that's fine as it is only used for v1.0.
+/**
+ * Convert old YaBBSE/SMF1.0 settings to options.
+ * This function only works with MySQL.
+ * (it's used for SMF1.0.)
+ */
 function convertSettingstoOptions()
 {
 	global $db_prefix, $modSettings;
@@ -1337,6 +1368,10 @@ function convertSettingstoOptions()
 	}
 }
 
+/**
+ * This function saves the new settings in Settings.php file.
+ * @param array $config_vars new vars
+ */
 function changeSettings($config_vars)
 {
 	$settingsArray = file(BOARDDIR . '/Settings_bak.php');
@@ -1392,12 +1427,21 @@ function changeSettings($config_vars)
 	}
 	fclose($fp);
 }
+
+/**
+ * Initialize db_last_error file. (with 0)
+ */
 function updateLastError()
 {
 	// clear out the db_last_error file
 	file_put_contents(dirname(__FILE__) . '/db_last_error.php', '<' . '?' . "php\n" . '$db_last_error = 0;');
 }
 
+/**
+ * Check the minimum required PHP version.
+ *
+ * @return bool
+ */
 function php_version_check()
 {
 	$minver = explode('.', $GLOBALS['required_php_version']);
@@ -1406,6 +1450,9 @@ function php_version_check()
 	return !(($curver[0] <= $minver[0]) && ($curver[1] <= $minver[1]) && ($curver[1] <= $minver[1]) && ($curver[2][0] < $minver[2][0]));
 }
 
+/**
+ * Check the minimum required version for the database system we're on.
+ */
 function db_version_check()
 {
 	global $db_type, $database;
@@ -1416,6 +1463,10 @@ function db_version_check()
 	return version_compare($database['version'], $curver, '<=');
 }
 
+/**
+ * Try to get groups from the membergroups table.
+ * This function is only needed for SMF1.0 upgrade.
+ */
 function getMemberGroups()
 {
 	global $db_prefix;
