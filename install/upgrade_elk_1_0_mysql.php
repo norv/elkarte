@@ -21,7 +21,7 @@ class Upgrade_Elk_1_0_mysql
 						'function' => 'step_copy_current_backup_packages_setting'
 						),
 					'add_settings' => array(
-						'description' => 'Add new settings...',
+						'description' => 'Add new settings to settings table...',
 						'function' =>'step_add_settings'
 						)
 					)
@@ -306,7 +306,8 @@ class Upgrade_Elk_1_0_mysql
 				(\'gravatar_rating\', \'g\'),
 				(\'xmlnews_limit\', 5),
 				(\'visual_verification_num_chars\', \'6\'),
-				(\'enable_disregard\', 0);
+				(\'enable_disregard\', 0),
+				(\'jquery_source\', \'local\');
 		');
 	}
 
