@@ -1,7 +1,7 @@
 <?php
 /* WARNING: You don't need to run or use this file.  Run upgrade.php script instead. */
 
-class Upgrade_Elk_1_0_mysql
+class Upgrade_Elk_1_0
 {
 	protected $steps = array();
 
@@ -415,7 +415,8 @@ class Upgrade_Elk_1_0_mysql
 		$db = database();
 
 		$db->query('', "
-
+		ALTER TABLE {$db_prefix}log_packages
+			ADD COLUMN credits varchar(255) NOT NULL DEFAULT '';
 		");
 	}
 

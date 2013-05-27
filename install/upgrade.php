@@ -1035,7 +1035,7 @@ function action_databaseChanges()
 		array('upgrade_1-1.sql', '2.0', '2.0 a'),
 		array('upgrade_2-0_' . $db_type . '.sql', '2.1', '2.1 dev0'),
 		// array('upgrade_2-1_' . $db_type . '.sql', '3.0', '3.0 dev0'),
-		array('upgrade_elk_1_0_' . $db_type . '.php', '1.1', CURRENT_VERSION, 'Upgrade_Elk_1_0_' . $db_type),
+		array('upgrade_elk_1_0_' . $db_type . '.php', '1.1', CURRENT_VERSION, $db_type == 'mysql' ? 'Upgrade_Elk_1_0' : 'Upgrade_Elk_1_0_' . $db_type),
 	);
 
 	// How many files are there in total?
