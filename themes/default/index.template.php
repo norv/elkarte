@@ -704,3 +704,32 @@ function template_select_boards($name, $label = '', $extra = '')
 	echo '
 	</select>';
 }
+
+/**
+ * Another used and abused piece of template that can be found everywhere
+ */
+function template_pagesection($button_strip = false, $strip_direction = '', $go = 'go_up', $options = array())
+{
+	global $context, $modSettings, $txt;
+
+	if (!isset($options['top_button']))
+		$options['top_button'] = !empty($modSettings['topbottomEnable']);
+	if (!empty($options['page_index_markup']))
+		$pages = '<div class="pagelinks floatleft">' . $options['page_index_markup'] . '</div>';
+	else
+	{
+		if (!isset($options['page_index']))
+			$options['page_index'] = 'page_index';
+		$pages = empty($context[$options['page_index']]) ? '' : '<div class="pagelinks floatleft">' . $context[$options['page_index']] . '</div>';
+	}
+	if (!isset($options['extra']))
+		$options['extra'] = '';
+
+		echo '
+	<div class="pagesection">
+		', $options['top_button'] ? '<a id="page' . ($go != 'go_up' ? 'top' : 'bot') . '" href="#' . ($go == 'go_up' ? 'top' : 'bot') . '" class="topbottom floatleft">' . $txt[$go] . '</a>' : '', $pages, '
+		', !empty($button_strip) && !empty($context[$button_strip]) ? template_button_strip($context[$button_strip], $strip_direction) : '',
+		$options['extra'], '
+	</div>';
+
+}

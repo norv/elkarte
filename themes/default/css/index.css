@@ -521,17 +521,22 @@ div.windowbg, div.windowbg2 {
 	clear: both;
 }
 #main_content_section .pagesection {
-	margin: 4px 0 0 0;
+	margin: 4px 0;
 }
 div.pagesection div.floatright input, div.pagesection div.floatright select {
 	margin-top: 3px;
 }
+.pagesection>div, .pagesection>a {
+	width: auto;
+	display: inline-block;
+}
 .selectbox, .pagelinks {
-	margin: 8px 0 0 0;
+/* 	margin: 8px 0 0 0; */
 }
 .pagelinks {
 	padding: 0 1px;
-	margin: 8px 0 0 0;
+	margin: 0;
+	vertical-align: middle;
 }
 .pagelinks  .pagelink:first-child {
 	border-top-left-radius: 4px;
@@ -595,7 +600,6 @@ small span.pagelink, small span.expand_pages {
 	border-radius: 3px;
 	box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
 	padding: 2px 7px 1px 7px;
-	margin: 5px 8px 0 0;
 	color: #222;
 }
 .topbottom:hover {
@@ -1306,7 +1310,7 @@ table.table_padding td {
 
 .buttonlist ul {
 	z-index: 100;
-	padding: 5px;
+/* 	padding: 5px; */
 	margin: 0 0 5px 0;
 }
 .buttonlist ul li {
@@ -1342,9 +1346,6 @@ table.table_padding td {
 }
 .pagesection ul.buttonlist_c>li>ul, div.buttonlist ul>li>ul {
 	display: none;
-}
-#pagetop, #pagebot {
-	margin-top: 7px;
 }
 div.buttonlist ul>li>ul li {
 	float: none;
