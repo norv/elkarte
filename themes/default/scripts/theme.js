@@ -26,8 +26,8 @@ $(document).ready(function() {
 		event.preventDefault();
 
 		// Position to the id pagetop or pagebot
-		var link = $('#page' + this.hash.substring(1));
-		var link_y = link.height() + 15;
+		var link = $('#page' + this.hash.substring(1)),
+			link_y = link.height() + 15;
 
 		$('html,body').animate({scrollTop:link.offset().top + link_y - $(window).height()}, 1500);
 	});
