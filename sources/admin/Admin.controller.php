@@ -142,7 +142,6 @@ class Admin_Controller extends Action_Controller
 						'icon' => 'transparent.png',
 						'class' => 'admin_img_exit',
 					),
-
 				),
 			),
 			'config' => array(
@@ -907,7 +906,7 @@ class Admin_Controller extends Action_Controller
 
 		// All the files we need to include.
 		$include_files = array(
-			'ManageFeatures', 'ManageBoards', 'ManageNews', 'AttachmentsAdmin', 'ManageAvatars', 'ManageCalendar', 'ManageMail',
+			'ManageFeatures', 'ManageBoards', 'ManageNews', 'AttachmentsAdmin', 'AvatarsAdmin', 'ManageCalendar', 'ManageMail',
 			'ManagePosts', 'ManageRegistration', 'ManageSearch', 'ManageSearchEngines', 'ManageServer', 'ManageSmileys', 'ManageLanguages',
 			'ManageBBC', 'ManageTopics', 'ManagePaid', 'ManagePermissions', 'ManageCoreFeatures', 'AdminLog', 'ManageDrafts',
 			'AddonSettingsAdmin', 'ManageSecurity'
@@ -927,7 +926,7 @@ class Admin_Controller extends Action_Controller
 			array('moderationSettings', 'area=securitysettings;sa=moderation', 'ManageSecurity_Controller'),
 			array('settings', 'area=modsettings;sa=general', 'AddonSettingsAdmin_Controller'),
 			array('settings', 'area=manageattachments;sa=attachments', 'AttachmentsAdmin_Controller'),
-			array('settings', 'area=manageattachments;sa=avatars', 'ManageAvatars_Controller'),
+			array('settings', 'area=manageattachments;sa=avatars', 'AvatarsAdmin_Controller'),
 			array('settings', 'area=managecalendar;sa=settings', 'ManageCalendar_Controller'),
 			array('settings', 'area=manageboards;sa=settings', 'ManageBoards_Controller'),
 			array('settings', 'area=mailqueue;sa=settings', 'ManageMail_Controller'),

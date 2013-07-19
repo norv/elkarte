@@ -60,8 +60,8 @@ class AttachmentsAdmin_Controller extends Action_Controller
 		$subActions = array(
 			'attachments' => array($this, 'action_attachSettings_display'),
 			'avatars' => array(
-				'file' => 'ManageAvatars.php',
-				'controller' => 'ManageAvatars_Controller',
+				'file' => 'AvatarsAdmin.controller.php',
+				'controller' => 'AvatarsAdmin_Controller',
 				'function' => 'action_index'),
 			'attachpaths' => array ($this, 'action_attachpaths'),
 			'browse' => array ($this, 'action_browse'),

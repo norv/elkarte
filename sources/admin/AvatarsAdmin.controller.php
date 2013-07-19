@@ -16,7 +16,7 @@ if (!defined('ELK'))
  * This is the avatars administration controller class.
  * It is doing the job of maintenance and allow display and change of admin settings.
  */
-class ManageAvatars_Controller extends Action_Controller
+class AvatarsAdmin_Controller extends Action_Controller
 {
 	/**
 	 * Avatars settings form
