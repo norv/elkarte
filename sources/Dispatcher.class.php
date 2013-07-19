@@ -132,7 +132,7 @@ class Site_Dispatcher
 		// $_GET['action'] => array($file, $class, $method)
 		$actionArray = array(
 			'activate' => array('Register.controller.php', 'Register_Controller', 'action_activate'),
-			'admin' => array('Admin.php', 'Admin_Controller', 'action_index'),
+			'admin' => array('Admin.controller.php', 'Admin_Controller', 'action_index'),
 			'attachapprove' => array('ModerateAttachments.controller.php', 'ModerateAttachments_Controller', 'action_attachapprove'),
 			'buddy' => array('Members.controller.php', 'Members_Controller', 'action_buddy'),
 			'collapse' => array('BoardIndex.controller.php', 'BoardIndex_Controller', 'action_collapse'),
