@@ -322,7 +322,7 @@ function callMenu($selectedMenu)
 
 	if (!empty($selectedMenu['controller']))
 	{
-		// 'controller' => 'ManageAttachments_Controller'
+		// 'controller' => 'AttachmentsAdmin_Controller'
 		// 'function' => 'action_avatars'
 		$controller = new $selectedMenu['controller']();
 		

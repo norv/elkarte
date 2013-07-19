@@ -22,7 +22,7 @@ if (!defined('ELK'))
  * This is the attachments and avatars controller class.
  * It is doing the job of attachments and avatars maintenance and management.
  */
-class ManageAttachments_Controller extends Action_Controller
+class AttachmentsAdmin_Controller extends Action_Controller
 {
 	/**
 	 * Attachments settings form
@@ -36,7 +36,7 @@ class ManageAttachments_Controller extends Action_Controller
 	 * and it calls a function based on the sub-action.
 	 * It requires the manage_attachments permission.
 	 *
-	 * @uses ManageAttachments template.
+	 * @uses AttachmentsAdmin template.
 	 * @uses Admin language file.
 	 * @uses template layer 'manage_files' for showing the tab bar.
 	 *
@@ -51,7 +51,7 @@ class ManageAttachments_Controller extends Action_Controller
 		isAllowedTo('manage_attachments');
 
 		// Setup the template stuff we'll probably need.
-		loadTemplate('ManageAttachments');
+		loadTemplate('AttachmentsAdmin');
 
 		// We're working with them settings here.
 		require_once(SUBSDIR . '/Settings.class.php');
@@ -828,7 +828,7 @@ class ManageAttachments_Controller extends Action_Controller
 
 	/**
 	 * This function should find attachments in the database that no longer exist and clear them, and fix filesize issues.
-	 * @todo Move db queries to ManageAttachments.subs.php
+	 * @todo Move db queries to Attachments.subs.php
 	 */
 	public function action_repair()
 	{
@@ -1354,7 +1354,7 @@ class ManageAttachments_Controller extends Action_Controller
 
 	/**
 	 * This function lists and allows updating of multiple attachments paths.
-	 * @todo Move db queries to ManageAttachments.subs.php
+	 * @todo Move db queries to Attachments.subs.php
 	 */
 	public function action_attachpaths()
 	{
@@ -1875,7 +1875,7 @@ class ManageAttachments_Controller extends Action_Controller
 
 	/**
 	 * Maintance function to move attachments from one directory to another
-	 * @todo Move db queries to ManageAttachments.subs.php
+	 * @todo Move db queries to Attachments.subs.php
 	 */
 	public function action_transfer()
 	{
@@ -2106,7 +2106,7 @@ class ManageAttachments_Controller extends Action_Controller
  *
  * @param array $to_fix attachments to fix
  * @param int $max_substep = 0
- * @todo Move to ManageAttachments.subs.php
+ * @todo Move to Attachments.subs.php
  */
 function pauseAttachmentMaintenance($to_fix, $max_substep = 0)
 {

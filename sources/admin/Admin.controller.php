@@ -245,8 +245,8 @@ class Admin_Controller extends Action_Controller
 					),
 					'modsettings' => array(
 						'label' => $txt['admin_modifications'],
-						'file' => 'ManageAddonSettings.php',
-						'controller' => 'ManageAddonSettings_Controller',
+						'file' => 'AddonSettingsAdmin.controller.php',
+						'controller' => 'AddonSettingsAdmin_Controller',
 						'function' => 'action_index',
 						'icon' => 'transparent.png',
 						'class' => 'admin_img_modifications',
@@ -351,8 +351,8 @@ class Admin_Controller extends Action_Controller
 					),
 					'manageattachments' => array(
 						'label' => $txt['attachments_avatars'],
-						'file' => 'ManageAttachments.php',
-						'controller' => 'ManageAttachments_Controller',
+						'file' => 'AttachmentsAdmin.controller.php',
+						'controller' => 'AttachmentsAdmin_Controller',
 						'function' => 'action_index',
 						'icon' => 'transparent.png',
 						'class' => 'admin_img_attachment',
@@ -907,10 +907,10 @@ class Admin_Controller extends Action_Controller
 
 		// All the files we need to include.
 		$include_files = array(
-			'ManageFeatures', 'ManageBoards', 'ManageNews', 'ManageAttachments', 'ManageAvatars', 'ManageCalendar', 'ManageMail',
+			'ManageFeatures', 'ManageBoards', 'ManageNews', 'AttachmentsAdmin', 'ManageAvatars', 'ManageCalendar', 'ManageMail',
 			'ManagePosts', 'ManageRegistration', 'ManageSearch', 'ManageSearchEngines', 'ManageServer', 'ManageSmileys', 'ManageLanguages',
 			'ManageBBC', 'ManageTopics', 'ManagePaid', 'ManagePermissions', 'ManageCoreFeatures', 'AdminLog', 'ManageDrafts',
-			'ManageAddonSettings', 'ManageSecurity'
+			'AddonSettingsAdmin', 'ManageSecurity'
 		);
 
 		// This is a special array of functions that contain setting data
@@ -925,8 +925,8 @@ class Admin_Controller extends Action_Controller
 			array('securitySettings', 'area=securitysettings;sa=general', 'ManageSecurity_Controller'),
 			array('spamSettings', 'area=securitysettings;sa=spam', 'ManageSecurity_Controller'),
 			array('moderationSettings', 'area=securitysettings;sa=moderation', 'ManageSecurity_Controller'),
-			array('settings', 'area=modsettings;sa=general', 'ManageAddonSettings_Controller'),
-			array('settings', 'area=manageattachments;sa=attachments', 'ManageAttachments_Controller'),
+			array('settings', 'area=modsettings;sa=general', 'AddonSettingsAdmin_Controller'),
+			array('settings', 'area=manageattachments;sa=attachments', 'AttachmentsAdmin_Controller'),
 			array('settings', 'area=manageattachments;sa=avatars', 'ManageAvatars_Controller'),
 			array('settings', 'area=managecalendar;sa=settings', 'ManageCalendar_Controller'),
 			array('settings', 'area=manageboards;sa=settings', 'ManageBoards_Controller'),
