@@ -430,8 +430,8 @@ class Admin_Controller extends Action_Controller
 					),
 					'ban' => array(
 						'label' => $txt['ban_title'],
-						'file' => 'ManageBans.php',
-						'controller' => 'ManageBans_Controller',
+						'file' => 'BansAdmin.controller.php',
+						'controller' => 'BansAdmin_Controller',
 						'function' => 'action_index',
 						'icon' => 'transparent.png',
 						'class' => 'admin_img_ban',
