@@ -22,9 +22,9 @@ if (!defined('ELK'))
 	die('No access...');
 
 /**
- * ManageErrors controller, administration of error log.
+ * ManageErrors.controller controller, administration of error log.
  */
-class ManageErrors_Controller extends Action_Controller
+class ManageErrors.controller_Controller extends Action_Controller
 {
 	/**
 	 * Calls the right handler.
@@ -62,6 +62,7 @@ class ManageErrors_Controller extends Action_Controller
 	{
 		global $scripturl, $txt, $context, $modSettings, $user_profile, $filter;
 
+		// we'll escape some strings...
 		$db = database();
 
 		require_once(SUBSDIR . '/Error.subs.php');
