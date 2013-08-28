@@ -953,6 +953,9 @@ class Maintenance_Controller extends Action_Controller
 		checkSession('request');
 		validateToken('admin-maint');
 
+		// Certain is certain. :P
+		require_once(SUBSDIR . '/Maintenance.subs.php');
+
 		// Set up to the context.
 		$context['page_title'] = $txt['not_done_title'];
 		$context['continue_countdown'] = 3;
@@ -1045,6 +1048,9 @@ class Maintenance_Controller extends Action_Controller
 		// You have to be allowed in here
 		isAllowedTo('admin_forum');
 		checkSession('request');
+
+		// We need this, really..
+		require_once(SUBSDIR . '/Maintenance.subs.php');
 
 		// Set up to the context.
 		$context['page_title'] = $txt['not_done_title'];
