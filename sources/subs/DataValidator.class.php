@@ -12,7 +12,7 @@ if (!defined('ELK'))
 	die('No access...');
 
 /**
- * Class used to validate and transform data
+ * Class used to validate and transform data.
  *
  * Initiate
  *		$validation = new Data_Validator();
@@ -31,7 +31,7 @@ if (!defined('ELK'))
  * 			'email'   	  => 'trim|gmail_normalize'
  * 		));
  *
- * Set Optional variable name substitutions
+ * Set optional variable name substitutions
  * text_replacements()
  *		$validation->text_replacements(array(
  *			'username' => $txt['someThing'],
@@ -100,7 +100,7 @@ class Data_Validator
 	/**
 	 * Set the validation rules that will be run against the data
 	 *
-	 * @param array $rules
+	 * @param array $rules = array()
 	 * @return array
 	 */
 	public function validation_rules($rules = array())
@@ -119,8 +119,8 @@ class Data_Validator
 	/**
 	 * Sets the sanitation rules used to clean data
 	 *
-	 * @param array $rules
-	 * @param boolean $strict
+	 * @param array $rules = array()
+	 * @param boolean $strict = false
 	 * @return array
 	 */
 	public function sanitation_rules($rules = array(), $strict = false)
@@ -139,7 +139,7 @@ class Data_Validator
 	}
 
 	/**
-	 * Field Name Replacements
+	 * Field name Replacements
 	 *
 	 * @return array
 	 */
@@ -191,6 +191,7 @@ class Data_Validator
 	/**
 	 * Return data
 	 *
+	 * @param string $key = null
 	 * @return array
 	 */
 	public function validation_data($key = null)
@@ -320,8 +321,8 @@ class Data_Validator
 	/**
 	 * Process any errors and return the error strings
 	 *
-	 * @return array
-	 * @return string
+	 * @param array $keys
+	 * @return array or string
 	 */
 	private function _get_error_messages($keys)
 	{
@@ -366,7 +367,7 @@ class Data_Validator
 	//
 
 	/**
-	 * Contains ... Verify that a value is one of those provided (case insensitive)
+	 * This method verifies that a value is one of those provided (case insensitive)
 	 *
 	 * Usage: '[key]' => 'contains[value, value, value]'
 	 *
@@ -392,7 +393,7 @@ class Data_Validator
 	}
 
 	/**
-	 * NotEqual ... Verify that a value does equal any values in list (case insensitive)
+	 * This method verifies that a value does not equal any values in list (case insensitive)
 	 *
 	 * Usage: '[key]' => 'notequal[value, value, value]'
 	 *
@@ -418,7 +419,7 @@ class Data_Validator
 	}
 
 	/**
-	 * Without ... Verify that a value does contain any characters/values in list
+	 * This method verifies that a value does contain any characters/values in list
 	 *
 	 * Usage: '[key]' => 'without[value, value, value]'
 	 *
@@ -448,7 +449,7 @@ class Data_Validator
 
 
 	/**
-	 * required ... Check if the specified key is present and not empty
+	 * This method checks if the specified key is present and not empty
 	 *
 	 * Usage: '[key]' => 'required'
 	 *
@@ -471,7 +472,7 @@ class Data_Validator
 	}
 
 	/**
-	 * valid_email .... Determine if the provided email is valid
+	 * Determines if the provided email is valid
 	 *
 	 * Usage: '[key]' => 'valid_email'
 	 *
@@ -551,7 +552,7 @@ class Data_Validator
 	}
 
 	/**
-	 * max_length ... Determine if the provided value length is less or equal to a specific value
+	 * Determines if the provided value length is less or equal to a specific value
 	 *
 	 * Usage: '[key]' => 'max_length[x]'
 	 *
@@ -577,7 +578,7 @@ class Data_Validator
 	}
 
 	/**
-	 * min_length Determine if the provided value length is greater than or equal to a specific value
+	 * Determines if the provided value length is greater than or equal to a specific value
 	 *
 	 * Usage: '[key]' => 'min_length[x]'
 	 *
@@ -603,7 +604,7 @@ class Data_Validator
 	}
 
 	/**
-	 * length ... Determine if the provided value length matches a specific value
+	 * Determines if the provided value length matches a specific value
 	 *
 	 * Usage: '[key]' => 'exact_length[x]'
 	 *
@@ -629,7 +630,7 @@ class Data_Validator
 	}
 
 	/**
-	 * alpha ... Determine if the provided value contains only alpha characters
+	 * Determines if the provided value contains only alpha characters
 	 *
 	 * Usage: '[key]' => 'alpha'
 	 *
@@ -656,7 +657,7 @@ class Data_Validator
 	}
 
 	/**
-	 * alpha_numeric ... Determine if the provided value contains only alpha-numeric characters
+	 * Determines if the provided value contains only alpha-numeric characters
 	 *
 	 * Usage: '[key]' => 'alpha_numeric'
 	 *
@@ -683,7 +684,7 @@ class Data_Validator
 	}
 
 	/**
-	 * alpha_dash ... Determine if the provided value contains only alpha characters plus dashed and underscores
+	 * Determines if the provided value contains only alpha characters plus dashed and underscores
 	 *
 	 * Usage: '[key]' => 'alpha_dash'
 	 *
@@ -709,7 +710,7 @@ class Data_Validator
 	}
 
 	/**
-	 * isarray ... Determine if the provided value exists and is an array
+	 * Determines if the provided value exists and is an array
 	 *
 	 * Usage: '[key]' => 'isarray'
 	 *
@@ -736,7 +737,7 @@ class Data_Validator
 	}
 
 	/**
-	 * numeric ... Determine if the provided value is a valid number or numeric string
+	 * Determines if the provided value is a valid number or numeric string
 	 *
 	 * Usage: '[key]' => 'numeric'
 	 *
@@ -762,7 +763,7 @@ class Data_Validator
 	}
 
 	/**
-	 * integer ... Determine if the provided value is a valid integer
+	 * Determines if the provided value is a valid integer
 	 *
 	 * Usage: '[key]' => 'integer'
 	 *
@@ -788,7 +789,7 @@ class Data_Validator
 	}
 
 	/**
-	 * boolean ... Determine if the provided value is a boolean
+	 * Determines if the provided value is a boolean
 	 *
 	 * Usage: '[key]' => 'boolean'
 	 *
@@ -814,7 +815,7 @@ class Data_Validator
 	}
 
 	/**
-	 * float ... Determine if the provided value is a valid float
+	 * Determines if the provided value is a valid float
 	 *
 	 * Usage: '[key]' => 'float'
 	 *
@@ -840,7 +841,7 @@ class Data_Validator
 	}
 
 	/**
-	 * valid_url ... Determine if the provided value is a valid-ish URL
+	 * Determines if the provided value is a valid-ish URL
 	 *
 	 * Usage: '[key]' => 'valid_url'
 	 *
@@ -866,7 +867,7 @@ class Data_Validator
 	}
 
 	/**
-	 * valid_ipv6 ... Determine if the provided value is a valid IPv6 address
+	 * Determines if the provided value is a valid IPv6 address
 	 *
 	 * Usage: '[key]' => 'valid_ipv6'
 	 *
@@ -892,7 +893,7 @@ class Data_Validator
 	}
 
 	/**
-	 * valid_ip ... Determine if the provided value is a valid IP4 address
+	 * Determines if the provided value is a valid IP4 address
 	 *
 	 * Usage: '[key]' => 'valid_ip'
 	 *
@@ -918,7 +919,7 @@ class Data_Validator
 	}
 
 	/**
-	 * Validate PHP syntax of an input.
+	 * Validates PHP syntax of an input.
 	 *
 	 * This approach to validation has been inspired by Compuart.
 	 *
@@ -980,7 +981,7 @@ class Data_Validator
 	//
 
 	/**
-	 * gmail_normalize ... Used to normalize a gmail address as many resolve to the same thing address
+	 * This method is used to normalize a gmail address as many resolve to the same thing address
 	 *
 	 * - Gmail user can use @googlemail.com instead of @gmail.com
 	 * - Gmail ignores all characters after a + (plus sign) in the username
