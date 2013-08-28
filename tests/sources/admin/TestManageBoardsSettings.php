@@ -2,7 +2,7 @@
 
 require_once(TESTDIR . 'simpletest/autorun.php');
 require_once(TESTDIR . '../SSI.php');
-require_once(ADMINDIR . '/ManageBoards.php');
+require_once(ADMINDIR . '/ManageBoards.controller.php');
 
 /**
  * TestCase class for manage boards settings
@@ -24,7 +24,7 @@ class TestManageBoardsSettings extends UnitTestCase
 	{
 		$controller = new ManageBoards_Controller();
 		$settings = $controller->settings();
-		
+
 		// Lets see some hardcoded setting for boards management...
 		$this->assertNotNull($settings);
 		$this->assertTrue(in_array(array('title', 'settings'), $settings));

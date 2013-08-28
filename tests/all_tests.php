@@ -50,6 +50,7 @@ class AllTests extends TestSuite
 
 		// core sources
 		$this->addFile(TESTDIR . 'sources/TestLogging.php');
+		$this->addFile(TESTDIR . 'sources/TestDataValidator.php');
 		$this->addFile(TESTDIR . 'sources/TestDispatcher.php');
 		$this->addFile(TESTDIR . 'sources/TestRequest.php');
 
