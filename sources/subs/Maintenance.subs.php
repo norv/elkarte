@@ -759,6 +759,7 @@ function updateZeroPostMembers()
 				'zero' => 0,
 				'string_zero' => '0',
 				'db_error_skip' => true,
+				'recycle' => $modSettings['recycle_board'],
 			)
 		) !== false;
 
